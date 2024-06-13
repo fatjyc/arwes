@@ -1,7 +1,7 @@
-import React, { type ReactElement } from 'react';
-import { createRoot } from 'react-dom/client';
-import { Animator } from '@arwes/react-animator';
-import { Puffs } from '@arwes/react-bgs';
+import React, { type ReactElement } from 'react'
+import { createRoot } from 'react-dom/client'
+import { Animator } from '@arwes/react-animator'
+import { Puffs } from '@arwes/react-bgs'
 
 const Sandbox = (): ReactElement => {
   return (
@@ -15,7 +15,8 @@ const Sandbox = (): ReactElement => {
       }}
     >
       <Puffs
-        color='hsla(60, 100%, 75%, 0.5)'
+        style={{ width: '90vw', height: '90vh' }}
+        color="hsla(60, 100%, 75%, 0.5)"
         quantity={100}
         padding={0}
         // Move to the right.
@@ -28,7 +29,7 @@ const Sandbox = (): ReactElement => {
         sets={1}
       />
     </Animator>
-  );
-};
+  )
+}
 
-createRoot(document.querySelector('#root') as HTMLElement).render(<Sandbox />);
+createRoot(document.querySelector('#root')!).render(<Sandbox />)

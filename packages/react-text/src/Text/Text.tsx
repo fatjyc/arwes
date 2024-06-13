@@ -3,28 +3,30 @@ import {
   type ReactElement,
   type HTMLProps,
   type ForwardedRef,
+  type CSSProperties,
+  createElement,
   useMemo,
   useState,
   useRef,
   useEffect
-} from 'react';
-import { jsx } from '@emotion/react';
-import { cx } from '@arwes/tools';
-import { mergeRefs } from '@arwes/react-tools';
-import { ANIMATOR_STATES as STATES } from '@arwes/animator';
-import { type Animation, type easing } from '@arwes/animated';
-import { useAnimator } from '@arwes/react-animator';
+} from 'react'
+import { cx } from '@arwes/tools'
+import { mergeRefs } from '@arwes/react-tools'
+import { ANIMATOR_STATES as STATES } from '@arwes/animator'
+import { type Animation, type easing } from '@arwes/animated'
+import { useAnimator } from '@arwes/react-animator'
 import {
   type TextTransitionManager,
   getTransitionTextDuration,
   transitionTextSequence,
   transitionTextDecipher
-} from '@arwes/text';
+} from '@arwes/text'
 
 interface TextProps<E extends HTMLElement = HTMLSpanElement> extends HTMLProps<E> {
   as?: keyof HTMLElementTagNameMap
   className?: string
   contentClassName?: string
+  contentStyle?: CSSProperties
   elementRef?: ForwardedRef<E>
   manager?: TextTransitionManager
   easing?: keyof typeof easing
@@ -33,142 +35,165 @@ interface TextProps<E extends HTMLElement = HTMLSpanElement> extends HTMLProps<E
    * or dynamic according to its children.
    */
   fixed?: boolean
-  hideOnExited?: boolean
   hideOnEntered?: boolean
+  hideOnExited?: boolean
   children: ReactNode
 }
 
-const TEXT_CLASS = 'arwes-react-text-text';
+const TEXT_CLASS = 'arwes-react-text-text'
 
 const Text = <E extends HTMLElement = HTMLSpanElement>(props: TextProps<E>): ReactElement => {
   const {
     as: asProvided = 'p',
     className,
     contentClassName,
+    contentStyle,
     children,
     manager,
     easing,
     fixed,
-    hideOnExited = true,
     hideOnEntered,
+    hideOnExited = true,
     elementRef: elementRefProvided,
     ...otherProps
-  } = props;
+  } = props
 
-  const as = useMemo(() => asProvided, []);
-  const [childrenText, setChildrenText] = useState('');
-  const elementRef = useRef<E>(null);
-  const contentElementRef = useRef<HTMLSpanElement>(null);
-  const transitionControl = useRef<Animation | null>(null);
-  const animator = useAnimator();
-  const [isExited, setIsExited] = useState(() => animator?.node.state === STATES.exited);
-  const [isEntered, setIsEntered] = useState(() => animator?.node.state === STATES.entered);
+  const as = useMemo(() => asProvided, [])
+  const [childrenText, setChildrenText] = useState('')
+  const elementRef = useRef<E>(null)
+  const contentElementRef = useRef<HTMLSpanElement>(null)
+  const transitionControl = useRef<Animation | null>(null)
+  const animator = useAnimator()
+  const [isExited, setIsExited] = useState(() => animator?.node.state === STATES.exited)
+  const [isEntered, setIsEntered] = useState(() => animator?.node.state === STATES.entered)
+
+  const contentVisibility = useMemo(
+    () =>
+      animator &&
+      ((!isEntered && !isExited) || (hideOnEntered && isEntered) || (hideOnExited && isExited))
+        ? 'hidden'
+        : 'visible',
+    [animator, hideOnEntered, isEntered, hideOnExited, isExited]
+  )
 
   useEffect(() => {
-    setChildrenText(contentElementRef.current?.textContent ?? '');
-  }, [children]);
+    setChildrenText(contentElementRef.current?.textContent ?? '')
+  }, [children])
 
   useEffect(() => {
     if (!animator) {
       if (contentElementRef.current) {
-        contentElementRef.current.style.visibility = 'visible';
+        contentElementRef.current.style.visibility = 'visible'
       }
-      return;
+      return
     }
 
     // If there is no text, there is nothing to animate.
     if (!childrenText.length) {
-      return;
+      return
+    }
+
+    const rootElement = elementRef.current
+    const contentElement = contentElementRef.current
+
+    if (!rootElement || !contentElement) {
+      return
     }
 
     if (!fixed) {
-      const settings = animator.node.control.getSettings();
+      const settings = animator.node.control.getSettings()
       const durationEnter = getTransitionTextDuration({
         length: childrenText.length,
         maxDuration: settings.duration.enter
-      });
+      })
       const durationExit = getTransitionTextDuration({
         length: childrenText.length,
         maxDuration: settings.duration.exit
-      });
+      })
 
       animator.node.control.setDynamicSettings({
         duration: { enter: durationEnter, exit: durationExit }
-      });
+      })
     }
 
-    const transitioner = manager === 'decipher'
-      ? transitionTextDecipher
-      : transitionTextSequence;
-
     const transition = (duration: number, isEntering: boolean): void => {
-      transitionControl.current?.cancel();
+      const transitioner = manager === 'decipher' ? transitionTextDecipher : transitionTextSequence
+
+      transitionControl.current?.cancel()
       transitionControl.current = transitioner({
-        rootElement: elementRef.current as HTMLElement,
-        contentElement: contentElementRef.current as HTMLElement,
+        rootElement,
+        contentElement,
         duration,
         isEntering,
         easing,
         hideOnExited,
         hideOnEntered
-      });
-    };
+      })
+    }
 
-    const cancelSubscription = animator.node.subscribe(node => {
-      setIsEntered(node.state === STATES.entered);
-      setIsExited(node.state === STATES.exited);
+    const cancelSubscription = animator.node.subscribe((node) => {
+      setIsEntered(node.state === STATES.entered)
+      setIsExited(node.state === STATES.exited)
 
       switch (node.state) {
         case 'entered': {
           if (!transitionControl.current) {
-            transition(node.duration.enter, true);
+            transition(node.duration.enter, true)
           }
-          break;
+          break
         }
         case 'entering': {
-          transition(node.duration.enter, true);
-          break;
+          transition(node.duration.enter, true)
+          break
         }
         case 'exiting': {
-          transition(node.duration.exit, false);
-          break;
+          transition(node.duration.exit, false)
+          break
         }
       }
-    });
+    })
 
     return () => {
-      cancelSubscription();
-      transitionControl.current?.cancel();
-      transitionControl.current = null;
-    };
-  }, [animator, childrenText]);
+      cancelSubscription()
+      transitionControl.current?.cancel()
+      transitionControl.current = null
+    }
+  }, [animator, childrenText])
 
-  return jsx(
+  useEffect(() => {
+    if (contentElementRef.current) {
+      contentElementRef.current.style.visibility = contentVisibility
+    }
+  }, [contentVisibility])
+
+  return createElement(
     as,
     {
       ...otherProps,
       className: cx(TEXT_CLASS, className),
-      css: {
-        position: 'relative'
+      style: {
+        position: 'relative',
+        ...otherProps.style
       },
       ref: mergeRefs<E>(elementRefProvided, elementRef)
     },
-    jsx(
+    createElement(
       'span',
       {
         ref: contentElementRef,
         className: cx(`${TEXT_CLASS}__content`, contentClassName),
-        css: {
+        style: {
           position: 'relative',
           zIndex: 1,
           display: 'inline-block',
-          visibility: animator && ((hideOnEntered && isEntered) || (hideOnExited && isExited)) ? 'hidden' : 'visible'
+          ...contentStyle,
+          visibility: contentVisibility
         }
       },
       children
     )
-  );
-};
+  )
+}
 
-export type { TextProps };
-export { TEXT_CLASS, Text };
+export type { TextProps }
+export { TEXT_CLASS, Text }

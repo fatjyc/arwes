@@ -1,20 +1,17 @@
 // BLEEP
 
-export type BleepCategory =
-  | 'background'
-  | 'transition'
-  | 'interaction'
-  | 'notification';
+export type BleepCategory = 'background' | 'transition' | 'interaction' | 'notification'
 
 export interface BleepGeneralProps {
   readonly preload?: boolean
   readonly volume?: number
   readonly fetchHeaders?: Headers
+  readonly maxPlaybackDelay?: number
   readonly disabled?: boolean
 }
 
 export interface BleepProps extends Omit<BleepGeneralProps, 'disabled'> {
-  readonly sources: Array<Readonly<{ src: string, type: string }>>
+  readonly sources: Array<Readonly<{ src: string; type: string }>>
   readonly loop?: boolean
   readonly category?: BleepCategory
   readonly context?: AudioContext
@@ -46,7 +43,7 @@ export interface BleepMasterProps {
   readonly volume?: number
 }
 
-export interface BleepsManagerProps <Names extends string = string> {
+export interface BleepsManagerProps<Names extends string = string> {
   readonly master?: BleepMasterProps
   readonly common?: BleepGeneralProps
   readonly categories?: {
@@ -67,7 +64,7 @@ export interface BleepsManagerPropsBleepUpdatable extends BleepPropsUpdatable {
   readonly disabled?: boolean
 }
 
-export interface BleepsManagerPropsUpdatable <Names extends string = string> {
+export interface BleepsManagerPropsUpdatable<Names extends string = string> {
   readonly master?: BleepsManagerPropsMasterUpdatable
   readonly common?: BleepsManagerPropsGeneralUpdatable
   readonly categories?: {
@@ -76,7 +73,7 @@ export interface BleepsManagerPropsUpdatable <Names extends string = string> {
   readonly bleeps?: Record<Names, BleepsManagerPropsBleepUpdatable>
 }
 
-export interface BleepsManager <Names extends string = string> {
+export interface BleepsManager<Names extends string = string> {
   readonly bleeps: Record<Names, Bleep | null>
   readonly unload: () => void
   readonly update: (props: BleepsManagerPropsUpdatable<Names>) => void

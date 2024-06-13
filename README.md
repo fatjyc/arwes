@@ -22,20 +22,20 @@
       <img src="https://img.shields.io/github/stars/arwes/arwes.svg?style=flat-square&label=stars" alt="Github Stars" />
   </a>
   <a href="https://npmjs.org/package/arwes">
-    <img alt="npm" src="https://img.shields.io/npm/dm/arwes?label=installs&style=flat-square" />
+    <img src="https://img.shields.io/npm/dm/arwes?label=installs&style=flat-square" alt="npm" />
   </a>
-  <a href="https://twitter.com/arwesjs">
-    <img src="https://img.shields.io/twitter/url?label=ArwesJS&logo=twitter&url=https%3A%2F%2Ftwitter.com%2Farwesjs" alt="Follow on Twitter" />
+  <a href="https://x.com/arwesjs">
+    <img src="https://img.shields.io/twitter/follow/arwesjs?style=social" alt="Follow on X" />
   </a>
   <a href="https://discord.gg/s5sbTkw">
-    <img src="https://img.shields.io/discord/457381046497968128?color=5865F2&logo=discord&logoColor=white" alt="Join us on Discord">
+    <img src="https://img.shields.io/badge/Discord-Join_Us?style=flat-square&logo=discord&logoColor=%2356F&color=%23505050" alt="Discord" />
   </a>
   <a href="https://github.com/arwes/arwes/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/arwes/arwes.svg?maxAge=2592000&style=flat-square" alt="License" />
   </a>
 </div>
 
-----
+---
 
 [Arwes](https://arwes.dev) is a web framework to build user interfaces based on
 futuristic science fiction designs, animations, and sound effects. The concepts
@@ -46,56 +46,55 @@ and productions like [Star Citizen](http://robertsspaceindustries.com),
 It tries to inspire advanced science and technology.
 
 > The project is under development and not ready for production yet. It is still in
-[alpha release](https://stackoverflow.com/questions/40067469), so the components
-are being tested and their API may change as it gets completed.
+> [alpha release](https://stackoverflow.com/questions/40067469), so the components
+> are being tested and their API may change as it gets completed.
 
 > Branch [`main`](https://github.com/arwes/arwes/tree/main) is for `1.0.0-alpha`
-releases and public content deployed at [arwes.dev](https://arwes.dev).
+> releases and public content deployed at [arwes.dev](https://arwes.dev).
 
 > Branch [`next`](https://github.com/arwes/arwes/tree/next) is for `1.0.0-next`
-releases and active development deployed at [next.arwes.dev](https://next.arwes.dev).
+> releases and active development deployed at [next.arwes.dev](https://next.arwes.dev).
 
 > The previous version `@arwes/[package]@1.0.0-alpha.19` was moved to [version1-breakpoint2.arwes.dev](https://version1-breakpoint2.arwes.dev)
-and [playground.version1-breakpoint2.arwes.dev](https://playground.version1-breakpoint2.arwes.dev)
-with the branch [`version1-breakpoint2`](https://github.com/arwes/arwes/tree/version1-breakpoint2)
-where you can find the components, the playground, and the website source code. This version
-was released in April, 2021, and it is now deprecated.
+> and [playground.version1-breakpoint2.arwes.dev](https://playground.version1-breakpoint2.arwes.dev)
+> with the branch [`version1-breakpoint2`](https://github.com/arwes/arwes/tree/version1-breakpoint2)
+> where you can find the components, the playground, and the website source code. This version
+> was released in April, 2021, and it is now deprecated.
 
 > The previous version `arwes@1.0.0-alpha.5` was moved to [version1-breakpoint1.arwes.dev](https://version1-breakpoint1.arwes.dev)
-with the branch [`version1-breakpoint1`](https://github.com/arwes/arwes/tree/version1-breakpoint1)
-where you can find the components and the website source code. This version was
-released in February, 2018, and it is now deprecated.
+> with the branch [`version1-breakpoint1`](https://github.com/arwes/arwes/tree/version1-breakpoint1)
+> where you can find the components and the website source code. This version was
+> released in February, 2018, and it is now deprecated.
 
 ## Packages
 
 ### Vanilla
 
-Package | Status | Description
----|---|---
-`@arwes/tools` |  Polishing | General React API tools
-`@arwes/theme` | Development | Color, units, and general purpose dynamic theming tools
-`@arwes/animated` | Polishing | HTML element animation utilities
-`@arwes/animator` | Polishing | Assemble and disassemble user interfaces using animation controls
-`@arwes/bleeps` | Polishing | Define, manage, and control interactive short sound effects
-`@arwes/text` | Polishing | Text rendering effect tools
-`@arwes/frames` | Polishing | Build responsive vector graphics components
-`@arwes/bgs` | Development | Passive UI background effects
-`@arwes/core` | Development | Core UI functionalities
-`arwes` | Polishing | All vanilla packages bundle
+| Package           | Status    | Description                                                       |
+| ----------------- | --------- | ----------------------------------------------------------------- |
+| `@arwes/tools`    | Polishing | General React API tools                                           |
+| `@arwes/theme`    | Polishing | Color, units, and general purpose dynamic theming tools           |
+| `@arwes/animated` | Polishing | HTML element animation utilities                                  |
+| `@arwes/animator` | Polishing | Assemble and disassemble user interfaces using animation controls |
+| `@arwes/bleeps`   | Polishing | Define, manage, and control interactive short sound effects       |
+| `@arwes/text`     | Polishing | Text rendering effect tools                                       |
+| `@arwes/frames`   | Polishing | Build responsive vector graphics components                       |
+| `@arwes/bgs`      | Polishing | Passive UI background effects                                     |
+| `arwes`           | Polishing | All vanilla packages bundle                                       |
 
 ### React
 
-Package | Status | Description
----|---|---
-`@arwes/react-tools` | Polishing | General browser API tools
-`@arwes/react-animator` | Polishing | Animator interface tools
-`@arwes/react-animated` | Polishing | Animated UI elements using animator tools
-`@arwes/react-bleeps` | Polishing | Interactive short sound effects manager
-`@arwes/react-text` | Polishing | Text effect components
-`@arwes/react-frames` | Polishing | Build responsive vector graphics components
-`@arwes/react-bgs` | Polishing | Passive UI background effects
-`@arwes/react-core` | Specification | Core UI components
-`@arwes/react` | Polishing | All vanilla and React packages bundle
+| Package                 | Status    | Description                                 |
+| ----------------------- | --------- | ------------------------------------------- |
+| `@arwes/react-tools`    | Polishing | General browser API tools                   |
+| `@arwes/react-animator` | Polishing | Animator interface tools                    |
+| `@arwes/react-animated` | Polishing | Animated UI elements using animator tools   |
+| `@arwes/react-bleeps`   | Polishing | Interactive short sound effects manager     |
+| `@arwes/react-text`     | Polishing | Text effect components                      |
+| `@arwes/react-frames`   | Polishing | Build responsive vector graphics components |
+| `@arwes/react-bgs`      | Polishing | Passive UI background effects               |
+| `@arwes/react-core`     | Polishing | Core UI components                          |
+| `@arwes/react`          | Polishing | All vanilla and React packages bundle       |
 
 ## Community
 
@@ -135,7 +134,7 @@ Review [frequently asked questions](./FAQ.md) and [code of conduct](./.github/CO
 
 ## Roadmap
 
-Check out [Project Task Boards](https://github.com/arwes/arwes/projects).
+Check out the [Arwes Project Boards](https://github.com/orgs/arwes/projects).
 
 ## Contributors
 

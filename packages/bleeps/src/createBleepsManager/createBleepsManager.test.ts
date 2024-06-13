@@ -1,24 +1,24 @@
-/* eslint-env jest */
+import { vi, test, expect, beforeEach, afterEach } from 'vitest'
 
-import { createBleepsManager } from './createBleepsManager';
+import { createBleepsManager } from './createBleepsManager'
 
 beforeEach(() => {
   class AudioContext {
-    createGain (): object {
+    createGain(): object {
       return {
-        connect: jest.fn(),
+        connect: vi.fn(),
         gain: {
-          setValueAtTime: jest.fn()
+          setValueAtTime: vi.fn()
         }
-      };
+      }
     }
-  };
-  window.AudioContext = AudioContext as any;
-});
+  }
+  window.AudioContext = AudioContext as any
+})
 
 afterEach(() => {
-  window.AudioContext = null as any;
-});
+  window.AudioContext = null as any
+})
 
 test('Should create bleeps manager structure', () => {
   const bleepsManager = createBleepsManager({
@@ -28,16 +28,17 @@ test('Should create bleeps manager structure', () => {
         preload: false
       }
     }
-  });
+  })
   expect(bleepsManager).toMatchObject({
     bleeps: {
       click: expect.any(Object)
     },
     unload: expect.any(Function),
     update: expect.any(Function)
-  });
-});
+  })
+})
 
+// TODO:
 /*
 test('Should create and update bleeps with common and category settings changes', () => {
   let bleeps: any;
