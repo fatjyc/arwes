@@ -6,26 +6,18 @@ import {
   FrameSVGLines,
   Illuminator,
   Text,
-  aa,
-  useFrameSVGAssemblingAnimation,
-  aaVisibility,
+  transition,
+  useFrameSVGAssembler,
+  flicker,
   BleepsOnAnimator
 } from '@arwes/react'
 import type { BleepNames } from '@app/types'
 
 const Frame = (): ReactElement => {
   const svgRef = useRef<SVGSVGElement | null>(null)
-  const { onRender } = useFrameSVGAssemblingAnimation(svgRef)
+  useFrameSVGAssembler(svgRef)
 
-  return (
-    <FrameSVGLines
-      className="frame"
-      elementRef={svgRef}
-      onRender={onRender}
-      smallLineWidth={3}
-      positioned
-    />
-  )
+  return <FrameSVGLines className="frame" elementRef={svgRef} smallLineWidth={3} positioned />
 }
 
 const Page = (): ReactElement => {
@@ -83,7 +75,7 @@ const Page = (): ReactElement => {
 
       <Animator combine manager="stagger">
         <div className="container">
-          <Animated as="main" className="content" animated={[aa('y', 24, 0)]}>
+          <Animated as="main" className="content" animated={[transition('y', 24, 0)]}>
             <Animator merge duration={{ enter: 0.4, exit: 0.4 }}>
               <Frame />
               <Illuminator color="hsl(0deg 50% 50% / 0.05)" />
@@ -92,7 +84,7 @@ const Page = (): ReactElement => {
             <Animator>
               <Animated
                 animated={[
-                  aaVisibility(),
+                  flicker(),
                   {
                     transitions: {
                       entering: { y: [24, 0], options: { delay: 0.4 } },

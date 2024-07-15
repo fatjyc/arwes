@@ -5,36 +5,32 @@ const useFrameSVGRenderer = (
   onRenderExternal: (svg: SVGSVGElement, width: number, height: number) => void
 ): void => {
   useEffect(() => {
-    if (!svgRef.current) {
+    const svg = svgRef.current
+
+    if (!svg) {
       return
     }
 
-    const svg = svgRef.current
-
     const onRender = (): void => {
-      const { width, height } = svg.getBoundingClientRect()
+      const box = svg.getBoundingClientRect()
+
+      // In certain browsers, when the SVG viewBox has values with decimals above the 0.5,
+      // the browser clips the values to the edge. Round down the dimensions so it doesn't happen.
+      const width = Math.floor(box.width)
+      const height = Math.floor(box.height)
 
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`)
+
       onRenderExternal?.(svg, width, height)
     }
 
-    // Resize only once initially and synchronously.
     onRender()
 
-    // If ResizeObserver is available, allow rerenders on element resize.
-    if (window.ResizeObserver) {
-      let isFirstRender = true
-      const observer = new window.ResizeObserver(() => {
-        // The observer triggers and initial observation call asynchronously,
-        // but the first render was already executed before, so skip it.
-        if (isFirstRender) {
-          isFirstRender = false
-          return
-        }
-        onRender()
-      })
-      observer.observe(svg)
-      return () => observer.disconnect()
+    const observer = new window.ResizeObserver(onRender)
+    observer.observe(svg)
+
+    return () => {
+      observer.disconnect()
     }
   }, [onRenderExternal])
 }

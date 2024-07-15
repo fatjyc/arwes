@@ -1,5 +1,5 @@
 import React, {
-  type SVGProps,
+  type SVGAttributes,
   type ForwardedRef,
   type ReactElement,
   type ReactNode,
@@ -12,20 +12,34 @@ import { mergeRefs } from '@arwes/react-tools'
 import { type FrameSVGPathGeneric, renderFrameSVGPaths } from '@arwes/frames'
 import { useFrameSVGRenderer } from '../useFrameSVGRenderer/index.js'
 
-interface FrameSVGProps extends SVGProps<SVGSVGElement> {
+interface FrameSVGProps extends SVGAttributes<SVGSVGElement> {
   paths?: FrameSVGPathGeneric[]
   positioned?: boolean
   onRender?: (svg: SVGSVGElement, width: number, height: number) => void
+  id?: string
   className?: string
   style?: CSSProperties
   elementRef?: ForwardedRef<SVGSVGElement>
   children?: ReactNode
 }
 
+const positionedStyle: CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  display: 'block',
+  border: 0,
+  margin: 0,
+  padding: 0,
+  // In certain browsers, when a SVG has sizes with decimals above the 0.5,
+  // the browser clips the values to the edge. Round down the size so it doesn't happen.
+  width: 'round(down, 100%, 1px)',
+  height: 'round(down, 100%, 1px)'
+}
+
 const FrameSVG = (props: FrameSVGProps): ReactElement => {
   const {
     paths,
-    positioned,
+    positioned = true,
     onRender: onRenderExternal,
     className,
     style,
@@ -58,22 +72,7 @@ const FrameSVG = (props: FrameSVGProps): ReactElement => {
       // or the ResizeObserver API is not available, the SVG should be resized.
       preserveAspectRatio="none"
       style={{
-        ...(positioned
-          ? {
-              position: 'absolute',
-              zIndex: -1,
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              display: 'block',
-              border: 0,
-              margin: 0,
-              padding: 0,
-              width: '100%',
-              height: '100%'
-            }
-          : null),
+        ...(positioned ? positionedStyle : null),
         ...style
       }}
       {...otherProps}

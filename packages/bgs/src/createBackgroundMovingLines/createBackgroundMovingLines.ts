@@ -108,8 +108,7 @@ const createBackgroundMovingLines = (
   const draw = (intervalProgress: number): void => {
     const { lineWidth, lineColor, distance, sets: linesSetsLength } = getSettings()
 
-    const width = canvas.clientWidth
-    const height = canvas.clientHeight
+    const { width, height } = canvas
     const isResized = canvas.width !== width || canvas.height !== height
 
     const axis1Size = width
@@ -117,8 +116,6 @@ const createBackgroundMovingLines = (
     const positionsLength = 1 + Math.floor(axis1Size / distance)
     const margin = axis1Size % distance
 
-    canvas.width = width
-    canvas.height = height
     ctx.clearRect(0, 0, width, height)
 
     ctx.lineWidth = lineWidth
@@ -168,7 +165,7 @@ const createBackgroundMovingLines = (
 
     const {
       duration: { interval = 10 }
-    } = animator.node.control.getSettings()
+    } = animator.node.settings
 
     runningControl?.cancel()
     runningControl = animate(draw, {
@@ -221,7 +218,7 @@ const createBackgroundMovingLines = (
           transitionControl = animate(
             canvas,
             { opacity: [0, 1] },
-            { duration: node.duration.enter }
+            { duration: node.settings.duration.enter }
           )
           break
         }
@@ -236,7 +233,11 @@ const createBackgroundMovingLines = (
         }
 
         case 'exiting': {
-          transitionControl = animate(canvas, { opacity: [1, 0] }, { duration: node.duration.exit })
+          transitionControl = animate(
+            canvas,
+            { opacity: [1, 0] },
+            { duration: node.settings.duration.exit }
+          )
           break
         }
 

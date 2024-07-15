@@ -1,20 +1,26 @@
 import React, { useMemo, type ReactElement } from 'react'
 import { cx } from '@arwes/tools'
-import { type FrameSVGPathGeneric } from '@arwes/frames'
+import { memo } from '@arwes/react-tools'
+import type { FrameSVGPathGeneric } from '@arwes/frames'
 
 import { type FrameSVGProps, FrameSVG } from '../FrameSVG/index.js'
 
 interface FrameSVGUnderlineProps extends FrameSVGProps {
   squareSize?: number
   strokeWidth?: number
-  inverted?: boolean
-  className?: string
+  padding?: number
 }
 
-const FrameSVGUnderline = (props: FrameSVGUnderlineProps): ReactElement => {
-  const { squareSize: ss = 16, strokeWidth: sw = 1, inverted, className, ...otherProps } = props
+const FrameSVGUnderline = memo((props: FrameSVGUnderlineProps): ReactElement => {
+  const {
+    squareSize: ss = 16,
+    strokeWidth: sw = 1,
+    padding: p = 0,
+    className,
+    ...otherProps
+  } = props
 
-  const paths = useMemo(() => {
+  const paths: FrameSVGPathGeneric[] = useMemo(() => {
     const so = sw / 2
 
     return [
@@ -22,33 +28,35 @@ const FrameSVGUnderline = (props: FrameSVGUnderlineProps): ReactElement => {
         name: 'bg',
         style: {
           strokeWidth: 0,
-          fill: 'currentcolor'
+          fill: 'var(--arwes-frames-bg-color, currentcolor)',
+          filter: 'var(--arwes-frames-bg-filter)'
         },
         path: [
-          ['M', 0, 0],
-          ['L', 0, '100%'],
-          ['L', `100% - ${ss}`, '100%'],
-          ['L', '100%', `100% - ${ss}`],
-          ['L', '100%', 0]
+          ['M', p, p],
+          ['L', p, `100% - ${p}`],
+          ['L', `100% - ${ss} - ${p}`, `100% - ${p}`],
+          ['L', `100% - ${p}`, `100% - ${ss} - ${p}`],
+          ['L', `100% - ${p}`, p]
         ]
       },
       {
         name: 'line',
         style: {
-          stroke: 'currentcolor',
+          filter: 'var(--arwes-frames-line-filter)',
+          stroke: 'var(--arwes-frames-line-color, currentcolor)',
           strokeLinecap: 'round',
           strokeLinejoin: 'round',
           strokeWidth: String(sw),
           fill: 'none'
         },
         path: [
-          ['M', so, `100% - ${so}`],
-          ['L', `100% - ${ss}`, `100% - ${so}`],
-          ['L', `100% - ${so}`, `100% - ${ss - so}`]
+          ['M', so + p, `100% - ${so} - ${p}`],
+          ['L', `100% - ${ss} - ${p}`, `100% - ${so} - ${p}`],
+          ['L', `100% - ${so} - ${p}`, `100% - ${ss - so} - ${p}`]
         ]
       }
-    ] as FrameSVGPathGeneric[]
-  }, [ss, sw, inverted])
+    ]
+  }, [ss, sw, p])
 
   return (
     <FrameSVG
@@ -57,7 +65,7 @@ const FrameSVGUnderline = (props: FrameSVGUnderlineProps): ReactElement => {
       paths={paths}
     />
   )
-}
+})
 
 export type { FrameSVGUnderlineProps }
 export { FrameSVGUnderline }

@@ -1,11 +1,26 @@
 import type { TOScheduler } from '@arwes/tools'
 
 export interface AnimatorControl {
-  readonly getSettings: () => AnimatorSettings
-  readonly setDynamicSettings: (settings: AnimatorSettingsPartial | null) => void
-  readonly getDynamicSettings: () => AnimatorSettingsPartial | null
-  readonly setForeignRef: (ref: unknown) => void
+  /**
+   * Get the animator settings.
+   * @returns Animator settings.
+   */
+  readonly getSettings: () => AnimatorSettingsPartial
+  /**
+   * Set the animator settings.
+   * @param settings - New dynamic settings.
+   */
+  readonly setSettings: (settings: AnimatorSettingsPartial) => void
+  /**
+   * Get the foreign value stored for this animator.
+   */
   readonly getForeignRef: () => unknown
+  /**
+   * Set a foreign value to store for this animator.
+   * It is like a data which can be used for any purpose in the animator.
+   * @param ref - Any value.
+   */
+  readonly setForeignRef: (ref: unknown) => void
 }
 
 export type AnimatorState = 'entered' | 'entering' | 'exiting' | 'exited'
@@ -28,27 +43,32 @@ export type AnimatorManagerName =
   | 'switch'
 
 export type AnimatorSubscriber = (node: AnimatorNode) => void
+export type AnimatorWatcher = (node: AnimatorNode) => void
 
 export interface AnimatorManager {
   readonly name: AnimatorManagerName
   readonly getDurationEnter: (childrenNodes?: AnimatorNode[]) => number
-  readonly enterChildren: (childrenNodes?: AnimatorNode[]) => void
-  readonly destroy?: () => void
+  readonly enterChildren: (childrenNodes: AnimatorNode[]) => void
+  readonly exitChildren: (childrenNodes: AnimatorNode[]) => void
+  readonly destroy: () => void
 }
 
 export interface AnimatorNode {
+  readonly _parent?: AnimatorNode
+  readonly _children: Set<AnimatorNode>
+  readonly _subscribers: Set<AnimatorSubscriber>
+  readonly _watchers: Set<AnimatorWatcher>
+  readonly _scheduler: TOScheduler
+  readonly _getUserSettings: () => AnimatorSettings
+  _manager: AnimatorManager
+
   readonly id: string
-  readonly control: AnimatorControl
-  readonly parent?: AnimatorNode
-  readonly children: Set<AnimatorNode>
-  readonly subscribers: Set<AnimatorSubscriber>
-  readonly scheduler: TOScheduler
-  readonly duration: { enter: number; exit: number }
   readonly state: AnimatorState
+  readonly control: AnimatorControl
+  readonly settings: AnimatorSettings
   readonly subscribe: (subscriber: AnimatorSubscriber) => () => void
   readonly unsubscribe: (subscriber: AnimatorSubscriber) => void
   readonly send: (newAction: AnimatorAction) => void
-  manager: AnimatorManager
 }
 
 export interface AnimatorSystem {
@@ -67,6 +87,7 @@ export interface AnimatorDuration {
   delay: number
   offset: number
   stagger: number
+  limit: number
   [duration: string]: number
 }
 
@@ -81,8 +102,6 @@ export interface AnimatorSettings {
   onTransition?: (node: AnimatorNode) => void
 }
 
-// TODO: The duration type should only allow numeric values, otherwise they should
-// not be present. Right now it allows `undefined` values which triggers errors.
 export type AnimatorSettingsPartial = Partial<Omit<AnimatorSettings, 'duration'>> & {
   duration?: Partial<AnimatorDuration>
 }

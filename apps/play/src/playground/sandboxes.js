@@ -78,11 +78,11 @@ export const sandboxes = [
         name: '@arwes/styles',
         children: [
           {
-            name: 'styleGradientSteps',
+            name: 'styleSteps',
             children: [
               {
                 name: 'basic',
-                code: require('!raw-loader?esModule=false!@repository/packages/styles/src/styleGradientSteps/styleGradientSteps.basic.sandbox.tsx')
+                code: require('!raw-loader?esModule=false!@repository/packages/styles/src/styleSteps/styleSteps.basic.sandbox.tsx')
               }
             ]
           }
@@ -164,12 +164,12 @@ export const sandboxes = [
                 code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.managerSwitch.sandbox.tsx')
               },
               {
-                name: 'unmountOn',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.unmountOn.sandbox.tsx')
-              },
-              {
                 name: 'condition',
                 code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.condition.sandbox.tsx')
+              },
+              {
+                name: 'unmountOn',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.unmountOn.sandbox.tsx')
               },
               {
                 name: 'initialState',
@@ -186,18 +186,6 @@ export const sandboxes = [
               {
                 name: 'dynamicRendering',
                 code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.dynamicRendering.sandbox.tsx')
-              },
-              {
-                name: 'externalManagement',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.externalManagement.sandbox.tsx')
-              },
-              {
-                name: 'subsystemsTransitions',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.subsystemsTransitions.sandbox.tsx')
-              },
-              {
-                name: 'scrollList',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-animator/src/Animator/Animator.scrollList.sandbox.tsx')
               }
             ]
           },
@@ -215,6 +203,15 @@ export const sandboxes = [
       {
         name: '@arwes/react-animated',
         children: [
+          {
+            name: 'useAnimated',
+            children: [
+              {
+                name: 'basic',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/useAnimated/useAnimated.basic.sandbox.tsx')
+              }
+            ]
+          },
           {
             name: 'Animated',
             children: [
@@ -241,15 +238,24 @@ export const sandboxes = [
             ]
           },
           {
+            name: 'useAnimatedX',
+            children: [
+              {
+                name: 'basic',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/useAnimatedX/useAnimatedX.basic.sandbox.tsx')
+              },
+              {
+                name: 'hideOnStates',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/useAnimatedX/useAnimatedX.hideOnStates.sandbox.tsx')
+              }
+            ]
+          },
+          {
             name: 'AnimatedX',
             children: [
               {
                 name: 'basic',
                 code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/AnimatedX/AnimatedX.basic.sandbox.tsx')
-              },
-              {
-                name: 'options',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/AnimatedX/AnimatedX.options.sandbox.tsx')
               },
               {
                 name: 'disabled',
@@ -258,11 +264,23 @@ export const sandboxes = [
             ]
           },
           {
-            name: 'animations',
+            name: 'transitions',
             children: [
               {
-                name: 'basic',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/animations/animations.basic.sandbox.tsx')
+                name: 'transition',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/transitions/transitions.transition.sandbox.tsx')
+              },
+              {
+                name: 'fade',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/transitions/transitions.fade.sandbox.tsx')
+              },
+              {
+                name: 'flicker',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/transitions/transitions.flicker.sandbox.tsx')
+              },
+              {
+                name: 'draw',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-animated/src/transitions/transitions.draw.sandbox.tsx')
               }
             ]
           }
@@ -403,6 +421,10 @@ export const sandboxes = [
       {
         name: '@arwes/react-frames',
         children: [
+          {
+            name: 'basic',
+            code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/basic.sandbox.tsx')
+          },
           {
             name: 'useFrameSVGRenderer',
             children: [
@@ -547,6 +569,10 @@ export const sandboxes = [
         name: '@arwes/react-bgs',
         children: [
           {
+            name: 'basic',
+            code: require('!raw-loader?esModule=false!@repository/packages/react-bgs/src/basic.sandbox.tsx')
+          },
+          {
             name: 'Dots',
             children: [
               {
@@ -603,10 +629,6 @@ export const sandboxes = [
               {
                 name: 'basic',
                 code: require('!raw-loader?esModule=false!@repository/packages/react-bgs/src/MovingLines/MovingLines.basic.sandbox.tsx')
-              },
-              {
-                name: 'composition',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-bgs/src/MovingLines/MovingLines.composition.sandbox.tsx')
               }
             ]
           }
@@ -625,6 +647,31 @@ export const sandboxes = [
             ]
           }
         ]
+      }
+    ]
+  },
+  {
+    name: 'Examples',
+    children: [
+      {
+        name: 'backgrounds',
+        code: require('!raw-loader?esModule=false!../examples/backgrounds.sandbox.tsx')
+      },
+      {
+        name: 'button',
+        code: require('!raw-loader?esModule=false!../examples/button.sandbox.tsx')
+      },
+      {
+        name: 'alert',
+        code: require('!raw-loader?esModule=false!../examples/alert.sandbox.tsx')
+      },
+      {
+        name: 'scrollList',
+        code: require('!raw-loader?esModule=false!../examples/scrollList.sandbox.tsx')
+      },
+      {
+        name: 'subsystems',
+        code: require('!raw-loader?esModule=false!../examples/subsystems.sandbox.tsx')
       }
     ]
   }

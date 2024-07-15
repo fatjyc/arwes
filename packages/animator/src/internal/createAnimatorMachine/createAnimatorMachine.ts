@@ -1,10 +1,13 @@
-import { IS_BROWSER } from '@arwes/tools'
+import { isBrowser } from '@arwes/tools'
 
 import type { AnimatorNode, AnimatorState, AnimatorAction } from '../../types.js'
 import { ANIMATOR_STATES as STATES, ANIMATOR_ACTIONS as ACTIONS } from '../../constants.js'
 import { createAnimatorManager } from '../../internal/createAnimatorManager/index.js'
 
-type ActionProcedure = (() => AnimatorState) | (() => void)
+type ActionProcedure =
+  | (() => AnimatorState)
+  | (() => { duration: number; state: AnimatorState })
+  | (() => void)
 
 type StatesMap = {
   [P in AnimatorState | '*']?: {
@@ -35,22 +38,27 @@ const createAnimatorMachine = (
         [ACTIONS.enter]: STATES.entering,
 
         [ACTIONS.setup]: () => {
-          const settings = node.control.getSettings()
+          const settings = node._getUserSettings()
 
-          if (node.parent) {
-            const parentSettings = node.parent.control.getSettings()
+          if (node._parent) {
+            const parentSettings = node._parent._getUserSettings()
 
-            switch (node.parent.state) {
+            switch (node._parent.state) {
               case STATES.entering: {
-                if (parentSettings.combine || settings.merge) {
-                  node.parent.manager.enterChildren([node])
+                if (
+                  (parentSettings.combine || settings.merge) &&
+                  (settings.condition ? settings.condition(node) : true)
+                ) {
+                  node._parent._manager.enterChildren([node])
                 }
                 break
               }
               // If the parent has already entered, enter the incoming children whether
               // they have "merge" setting or the parent is in "combine" setting.
               case STATES.entered: {
-                node.parent.manager.enterChildren([node])
+                if (settings.condition ? settings.condition(node) : true) {
+                  node._parent._manager.enterChildren([node])
+                }
                 break
               }
             }
@@ -58,6 +66,12 @@ const createAnimatorMachine = (
             const isActive = settings.active === undefined || settings.active
 
             if (isActive) {
+              if (settings.duration.delay > 0) {
+                return {
+                  duration: settings.duration.delay,
+                  state: STATES.entering
+                }
+              }
               return STATES.entering
             }
           }
@@ -68,90 +82,67 @@ const createAnimatorMachine = (
     [STATES.entering]: {
       onEntry: {
         execute: () => {
-          const { combine } = node.control.getSettings()
-          const children = combine
-            ? Array.from(node.children)
-            : Array.from(node.children).filter((child) => child.control.getSettings().merge)
+          const settings = node._getUserSettings()
+          const children = Array.from(node._children).filter((child) => {
+            const childSettings = child._getUserSettings()
+            if (childSettings.condition ? !childSettings.condition(child) : false) {
+              return false
+            }
+            if (settings.combine) {
+              return true
+            }
+            return childSettings.merge
+          })
 
-          node.manager.enterChildren(children)
+          node._manager.enterChildren(children)
         },
 
-        schedule: () => {
-          const { duration } = node.control.getSettings()
-          return {
-            duration: duration.delay + duration.enter || 0,
-            action: ACTIONS.enterEnd
-          }
-        }
+        schedule: () => ({
+          duration: node.settings.duration.enter,
+          action: ACTIONS.enterEnd
+        })
       },
 
       onActions: {
         [ACTIONS.enterEnd]: STATES.entered,
-        [ACTIONS.exit]: STATES.exiting,
-
-        [ACTIONS.refresh]: () => {
-          const settings = node.control.getSettings()
-          const childrenExited = Array.from(node.children).filter(
-            (child) => child.state === STATES.exited
-          )
-
-          if (settings.combine) {
-            node.manager.enterChildren(childrenExited)
-          } else {
-            const childrenMerged = childrenExited.filter(
-              (child) => child.control.getSettings().merge
-            )
-            node.manager.enterChildren(childrenMerged)
-          }
-        }
+        [ACTIONS.exit]: STATES.exiting
       }
     },
 
     [STATES.entered]: {
       onEntry: {
         execute: () => {
-          const { combine } = node.control.getSettings()
+          const settings = node._getUserSettings()
 
-          if (combine) {
+          if (settings.combine) {
             return
           }
 
-          const children = Array.from(node.children).filter(
-            (child) => !child.control.getSettings().merge
-          )
+          const children = Array.from(node._children).filter((child) => {
+            const childSettings = child._getUserSettings()
+            return (
+              !childSettings.merge &&
+              (childSettings.condition ? childSettings.condition(child) : true)
+            )
+          })
 
-          node.manager.enterChildren(children)
+          node._manager.enterChildren(children)
         }
       },
 
       onActions: {
-        [ACTIONS.exit]: STATES.exiting,
-
-        [ACTIONS.refresh]: () => {
-          const childrenExited = Array.from(node.children).filter(
-            (child) => child.state === STATES.exited
-          )
-
-          node.manager.enterChildren(childrenExited)
-        }
+        [ACTIONS.exit]: STATES.exiting
       }
     },
 
     [STATES.exiting]: {
       onEntry: {
         execute: () => {
-          Array.from(node.children).forEach((child) => {
-            if (child.state === STATES.entering || child.state === STATES.entered) {
-              child.send(ACTIONS.exit)
-            } else if (child.state === STATES.exited) {
-              child.scheduler.stopAll()
-            }
-            // If the child is EXITING, it will go to EXITED soon.
-          })
+          node._manager.exitChildren(Array.from(node._children))
         },
 
         schedule: () => ({
-          duration: node.control.getSettings().duration.exit || 0,
+          duration: node.settings.duration.exit,
           action: ACTIONS.exitEnd
         })
       },
@@ -165,22 +156,72 @@ const createAnimatorMachine = (
     '*': {
       onActions: {
         [ACTIONS.update]: () => {
-          const settings = node.control.getSettings()
+          const settings = node._getUserSettings()
 
-          if (settings.manager !== node.manager.name) {
-            node.manager.destroy?.()
-            node.manager = createAnimatorManager(node, settings.manager)
+          if (settings.manager !== node._manager.name) {
+            node._manager.destroy?.()
+            node._manager = createAnimatorManager(node, settings.manager)
           }
 
-          if (!node.parent) {
+          if (!node._parent) {
             const isActive =
               (settings.active as boolean | undefined) === true || settings.active === undefined
 
             if ((state === STATES.exited || state === STATES.exiting) && isActive) {
+              if (settings.duration.delay > 0) {
+                return {
+                  duration: settings.duration.delay,
+                  state: STATES.entering
+                }
+              }
               return STATES.entering
-            } else if ((state === STATES.entered || state === STATES.entering) && !isActive) {
+            }
+            //
+            else if ((state === STATES.entered || state === STATES.entering) && !isActive) {
               return STATES.exiting
             }
+          }
+        },
+
+        [ACTIONS.refresh]: () => {
+          const settings = node._getUserSettings()
+
+          // Get each child settings once in this scope for performance.
+          const childrenWithSettings = Array.from(node._children).map((child) => ({
+            node: child,
+            settings: child._getUserSettings()
+          }))
+
+          if (node.state === STATES.entering || node.state === STATES.entered) {
+            const childrenInEnterToExit = childrenWithSettings
+              .filter(
+                (child) =>
+                  child.node.state === STATES.entering || child.node.state === STATES.entered
+              )
+              .filter((child) => {
+                if (node.state === STATES.entering) {
+                  return settings.combine || child.settings.merge
+                }
+                return true
+              })
+              .filter((child) => {
+                const { condition } = child.settings
+                return condition ? !condition(child.node) : false
+              })
+              .map((child) => child.node)
+
+            const childrenInExitToEnter = childrenWithSettings
+              .filter(
+                (child) => child.node.state === STATES.exiting || child.node.state === STATES.exited
+              )
+              .filter((child) => {
+                const { condition } = child.settings
+                return condition ? condition(child.node) : true
+              })
+              .map((child) => child.node)
+
+            node._manager.exitChildren(childrenInEnterToExit)
+            node._manager.enterChildren(childrenInExitToEnter)
           }
         }
       }
@@ -197,7 +238,7 @@ const createAnimatorMachine = (
     const { onEntry } = statesMap[state] || {}
     const { onTransition } = node.control.getSettings()
 
-    node.scheduler.stopAll()
+    node._scheduler.stopAll()
 
     if (onEntry?.execute) {
       onEntry.execute()
@@ -205,12 +246,12 @@ const createAnimatorMachine = (
 
     if (onEntry?.schedule) {
       const task = onEntry.schedule()
-      node.scheduler.start(task.duration, () => send(task.action))
+      node._scheduler.start(task.duration, () => send(task.action))
     }
 
     onTransition?.(node)
 
-    for (const subscriber of node.subscribers) {
+    for (const subscriber of node._subscribers) {
       subscriber(node)
     }
   }
@@ -224,7 +265,9 @@ const createAnimatorMachine = (
       transition(procedure)
     } else {
       const newState = procedure()
-      if (newState) {
+      if (typeof newState === 'object' && newState !== null) {
+        node._scheduler.start(newState.duration, () => transition(newState.state))
+      } else if (newState) {
         transition(newState)
       }
     }
@@ -234,7 +277,7 @@ const createAnimatorMachine = (
 
   const send = (action: AnimatorAction): void => {
     // In non-browser environments, there are no transitions.
-    if (!IS_BROWSER) {
+    if (!isBrowser()) {
       return
     }
 

@@ -1,31 +1,24 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
-import { type ReactElement, useRef, useState, useEffect } from 'react'
+import React, { type ReactElement, useRef, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Animator } from '@arwes/react-animator'
-import { FrameSVGUnderline, useFrameSVGAssemblingAnimation } from '@arwes/react-frames'
+import { FrameSVGUnderline } from '@arwes/react-frames'
+import { useFrameSVGAssembler } from '@arwes/react-core'
 
 const Frame = (): ReactElement => {
-  const svgRef = useRef<SVGSVGElement | null>(null)
-  const { onRender } = useFrameSVGAssemblingAnimation(svgRef)
-
+  const frameRef = useRef<SVGSVGElement>(null)
+  useFrameSVGAssembler(frameRef)
   return (
-    <div
-      css={{
-        position: 'relative',
-        width: 300,
-        height: 150,
-
-        '[data-name=bg]': {
-          color: 'hsl(180, 75%, 10%)'
-        },
-        '[data-name=line]': {
-          color: 'hsl(180, 75%, 50%)'
-        }
+    <FrameSVGUnderline
+      elementRef={frameRef}
+      style={{
+        // @ts-expect-error css variables
+        '--arwes-frames-bg-color': 'hsl(60, 75%, 10%)',
+        '--arwes-frames-bg-filter': 'drop-shadow(0 0 2px hsl(60, 75%, 10%))',
+        '--arwes-frames-line-color': 'hsl(60, 75%, 50%)',
+        '--arwes-frames-line-filter': 'drop-shadow(0 0 2px hsl(60, 75%, 50%))'
       }}
-    >
-      <FrameSVGUnderline elementRef={svgRef} onRender={onRender} positioned />
-    </div>
+      padding={4}
+    />
   )
 }
 
@@ -33,13 +26,15 @@ const Sandbox = (): ReactElement => {
   const [active, setActive] = useState(true)
 
   useEffect(() => {
-    const tid = setInterval(() => setActive((active) => !active), 2000)
-    return () => clearInterval(tid)
-  }, [])
+    const tid = setTimeout(() => setActive(!active), active ? 2_000 : 1_000)
+    return () => clearTimeout(tid)
+  }, [active])
 
   return (
     <Animator active={active}>
-      <Frame />
+      <div style={{ position: 'relative', width: 300, height: 100 }}>
+        <Frame />
+      </div>
     </Animator>
   )
 }

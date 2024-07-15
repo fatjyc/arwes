@@ -19,7 +19,7 @@ import {
   Menu as MenuIcon,
   Heart
 } from 'iconoir-react'
-import { cx, AnimatorGeneralProvider, Animator, aa, aaVisibility, aaOpacity } from '@arwes/react'
+import { cx, AnimatorGeneralProvider, Animator, transition, flicker, fade } from '@arwes/react'
 
 import { atomMotion, atomAudio } from '@app/utils'
 import { hiddenLG, hiddenSMDown, hiddenLGDown, hiddenXLDown } from '@app/styles'
@@ -40,8 +40,8 @@ const Header = (props: HeaderProps): ReactElement => {
   // of being container by containers.
   const isFloatingRoutePath = router.asPath === '/'
 
-  const leftItemAnimation = isFloatingRoutePath ? aaOpacity() : [aaVisibility(), aa('x', -4, 0, 0)]
-  const rightItemAnimation = isFloatingRoutePath ? aaOpacity() : [aaVisibility(), aa('x', 4, 0, 0)]
+  const leftItemAnimation = isFloatingRoutePath ? fade() : [flicker(), transition('x', -4, 0, 0)]
+  const rightItemAnimation = isFloatingRoutePath ? fade() : [flicker(), transition('x', 4, 0, 0)]
 
   return (
     <>
@@ -51,7 +51,7 @@ const Header = (props: HeaderProps): ReactElement => {
         left={
           <Animator combine manager="stagger">
             <Animator>
-              <Logo animated={aaVisibility()}>
+              <Logo animated={flicker()}>
                 {!isFloatingRoutePath && (
                   <Animator merge>
                     <LogoType className={hiddenSMDown} animated={leftItemAnimation} />
@@ -76,11 +76,11 @@ const Header = (props: HeaderProps): ReactElement => {
                   <Animator>
                     <MenuItem
                       className={cx(classes.menuItem, hiddenSMDown)}
-                      active={router.asPath.startsWith('/samples')}
+                      active={router.asPath.startsWith('/demos')}
                       animated={leftItemAnimation}
                     >
-                      <Link href="/samples" title="Go to Samples">
-                        <CollageFrame /> <span className={hiddenXLDown}>Samples</span>
+                      <Link href="/demos" title="Go to Demos">
+                        <CollageFrame /> <span className={hiddenXLDown}>Demos</span>
                       </Link>
                     </MenuItem>
                   </Animator>
@@ -113,7 +113,7 @@ const Header = (props: HeaderProps): ReactElement => {
           <>
             {router.asPath.startsWith('/docs') && (
               <Animator>
-                <Menu className={hiddenLGDown} animated={aaVisibility()}>
+                <Menu className={hiddenLGDown} animated={flicker()}>
                   <MenuItem
                     className={classes.menuItem}
                     active={router.asPath.includes('/docs/develop')}

@@ -1,10 +1,11 @@
 import { type ReactElement } from 'react'
 import Link from 'next/link'
 import { Page, Codepen, CollageFrame, DashboardSpeed } from 'iconoir-react'
-import { Animator, Animated, aaVisibility, aa, BleepsOnAnimator } from '@arwes/react'
+import { Animator, Animated, flicker, transition, BleepsOnAnimator } from '@arwes/react'
 import type { BleepNames } from '@app/types'
 import { Button } from '@app/ui'
 import { hiddenSMDown } from '@app/styles'
+import { theme } from '../theme'
 
 const PageIndex = (): ReactElement => {
   return (
@@ -77,9 +78,9 @@ const PageIndex = (): ReactElement => {
         <BleepsOnAnimator<BleepNames> transitions={{ entering: 'intro' }} continuous />
 
         <main className="page">
-          <Animated className="container" animated={aa('y', 12, 0)}>
+          <Animated className="container" animated={transition('y', 12, 0)}>
             <Animator>
-              <Animated as="h1" className="title" animated={[aaVisibility()]}>
+              <Animated as="h1" className="title" animated={[flicker()]}>
                 <img
                   role="heading"
                   className="logo"
@@ -94,7 +95,8 @@ const PageIndex = (): ReactElement => {
               <Animated
                 as="h2"
                 className="subtitle"
-                animated={[aaVisibility(), aa('scaleX', 1, 1)]}
+                style={{ fontFamily: theme.fontFamilies.body }}
+                animated={[flicker(), transition('scaleX', 1, 1)]}
               >
                 Futuristic Sci-Fi UI Web Framework
               </Animated>
@@ -102,7 +104,7 @@ const PageIndex = (): ReactElement => {
 
             <Animator>
               <nav className="nav">
-                <Animated className="nav-item" animated={[aaVisibility(), aa('x', -24, 0)]}>
+                <Animated className="nav-item" animated={[flicker(), transition('x', -24, 0)]}>
                   <Link href="/docs">
                     <Button size="small" tabIndex={-1} title="Go to Documentation">
                       <Page className={hiddenSMDown} />
@@ -110,15 +112,15 @@ const PageIndex = (): ReactElement => {
                     </Button>
                   </Link>
                 </Animated>
-                <Animated className="nav-item" animated={[aaVisibility(), aa('x', -12, 0)]}>
-                  <Link href="/samples">
-                    <Button size="small" tabIndex={-1} title="Go to Samples">
+                <Animated className="nav-item" animated={[flicker(), transition('x', -12, 0)]}>
+                  <Link href="/demos">
+                    <Button size="small" tabIndex={-1} title="Go to Demos">
                       <CollageFrame className={hiddenSMDown} />
-                      <span>Samples</span>
+                      <span>Demos</span>
                     </Button>
                   </Link>
                 </Animated>
-                <Animated className="nav-item" animated={[aaVisibility(), aa('x', 12, 0)]}>
+                <Animated className="nav-item" animated={[flicker(), transition('x', 12, 0)]}>
                   <a href="/play">
                     <Button size="small" tabIndex={-1} title="Go to Playground">
                       <Codepen className={hiddenSMDown} />
@@ -126,7 +128,7 @@ const PageIndex = (): ReactElement => {
                     </Button>
                   </a>
                 </Animated>
-                <Animated className="nav-item" animated={[aaVisibility(), aa('x', 24, 0)]}>
+                <Animated className="nav-item" animated={[flicker(), transition('x', 24, 0)]}>
                   <a href="/perf">
                     <Button size="small" tabIndex={-1} title="Go to Performance">
                       <DashboardSpeed className={hiddenSMDown} />

@@ -7,12 +7,18 @@ const Item = (): ReactElement => {
   return (
     <Animator>
       <Animated
-        style={{ margin: 10, width: 40, height: 20, backgroundColor: '#777' }}
+        style={{ margin: 10, width: 40, height: 20, background: '#777' }}
         animated={{
-          initialStyle: { x: 0, backgroundColor: '#0ff' },
+          initialStyle: { background: '#fff' },
           transitions: {
-            entering: { x: [0, 100], backgroundColor: '#ff0' },
-            exiting: { x: [100, 0], backgroundColor: '#0ff' }
+            // Every animation also accepts the settings:
+            // - duration: number
+            // - repeat: number
+            // - delay: number | motion/stagger(value: number)
+            // - easing: 'linear' | (x: number) => number
+            // - direction: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
+            entering: { x: [0, 100], background: '#ff0' },
+            exiting: { x: [100, 0], background: '#0ff' }
           }
         }}
       />
@@ -24,7 +30,7 @@ const Sandbox = (): ReactElement => {
   const [active, setActive] = useState(true)
 
   useEffect(() => {
-    const tid = setInterval(() => setActive((active) => !active), 2000)
+    const tid = setInterval(() => setActive((active) => !active), 2_000)
     return () => clearInterval(tid)
   }, [])
 

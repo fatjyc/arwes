@@ -1,32 +1,21 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
-import { type ReactElement } from 'react'
+import React, { type ReactElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { FrameSVGOctagon } from '@arwes/react-frames'
 
 const Sandbox = (): ReactElement => {
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: 150,
-        height: 300
-      }}
-    >
+    <div style={{ position: 'relative', width: 200, height: 200 }}>
       <FrameSVGOctagon
-        css={{
-          '[data-name=bg]': {
-            color: 'hsl(120, 75%, 10%)'
-          },
-          '[data-name=line]': {
-            color: 'hsl(120, 75%, 50%)'
-          }
+        style={{
+          // @ts-expect-error css variables
+          '--arwes-frames-bg-color': 'hsl(180, 75%, 10%)',
+          '--arwes-frames-line-color': 'hsl(180, 75%, 50%)'
         }}
+        squareSize={30}
         leftTop={false}
         rightTop={true}
         rightBottom={true}
         leftBottom={false}
-        positioned
       />
     </div>
   )

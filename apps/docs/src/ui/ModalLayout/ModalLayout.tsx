@@ -8,9 +8,9 @@ import {
   Text,
   Dots,
   cx,
-  aa,
-  aaVisibility,
-  useFrameSVGAssemblingAnimation
+  transition,
+  flicker,
+  useFrameSVGAssembler
 } from '@arwes/react'
 
 import { linkSecondary } from '@app/styles'
@@ -30,8 +30,8 @@ const ModalLayout = (props: ModalLayoutProps): ReactElement => {
   const frame1Ref = useRef<SVGSVGElement>(null)
   const frame2Ref = useRef<SVGSVGElement>(null)
 
-  const frame1Animation = useFrameSVGAssemblingAnimation(frame1Ref)
-  const frame2Animation = useFrameSVGAssemblingAnimation(frame2Ref)
+  useFrameSVGAssembler(frame1Ref)
+  useFrameSVGAssembler(frame2Ref)
 
   return (
     <Animator merge combine manager="sequence">
@@ -47,9 +47,9 @@ const ModalLayout = (props: ModalLayoutProps): ReactElement => {
           />
         </Animator>
 
-        <Animated className={classes.container} animated={aa('y', 16, 0)}>
+        <Animated className={classes.container} animated={transition('y', 16, 0)}>
           <Animator>
-            <Animated className={classes.frames} animated={aa('scaleY', 0.5, 1, 1)}>
+            <Animated className={classes.frames} animated={transition('scaleY', 0.5, 1, 1)}>
               <FrameSVGKranox
                 elementRef={frame1Ref}
                 className={classes.frame1}
@@ -63,7 +63,6 @@ const ModalLayout = (props: ModalLayoutProps): ReactElement => {
                 smallLineLength={12}
                 largeLineLength={48}
                 positioned
-                onRender={frame1Animation.onRender}
               />
               <FrameSVGNefrex
                 elementRef={frame2Ref}
@@ -78,7 +77,6 @@ const ModalLayout = (props: ModalLayoutProps): ReactElement => {
                 smallLineLength={12}
                 largeLineLength={48}
                 positioned
-                onRender={frame2Animation.onRender}
               />
             </Animated>
           </Animator>
@@ -96,7 +94,7 @@ const ModalLayout = (props: ModalLayoutProps): ReactElement => {
                     role="button"
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                     className={cx(linkSecondary, classes.close)}
-                    animated={aaVisibility()}
+                    animated={flicker()}
                     onClick={onClose}
                   >
                     <Xmark />
@@ -105,7 +103,7 @@ const ModalLayout = (props: ModalLayoutProps): ReactElement => {
               </header>
 
               <Animator>
-                <Animated as="hr" animated={aa('scaleX', 0, 1)} />
+                <Animated as="hr" animated={transition('scaleX', 0, 1)} />
               </Animator>
 
               <main className={classes.body}>{children}</main>

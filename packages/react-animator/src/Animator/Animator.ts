@@ -1,6 +1,8 @@
 import {
   type ReactElement,
+  type ReactNode,
   type ForwardedRef,
+  type DependencyList,
   createElement,
   useMemo,
   useContext,
@@ -11,20 +13,29 @@ import {
 
 import {
   type AnimatorNode,
-  type AnimatorSettings,
   type AnimatorSettingsPartial,
   type AnimatorSystem,
   type AnimatorControl,
   type AnimatorInterface,
   type AnimatorDuration,
-  ANIMATOR_DEFAULT_SETTINGS,
   ANIMATOR_STATES as STATES,
   ANIMATOR_ACTIONS as ACTIONS,
   createAnimatorSystem
 } from '@arwes/animator'
 import { AnimatorContext } from '../internal/AnimatorContext/index.js'
 import { AnimatorGeneralContext } from '../internal/AnimatorGeneralContext/index.js'
-import type { AnimatorProps } from './Animator.types.js'
+
+interface AnimatorProps extends AnimatorSettingsPartial {
+  root?: boolean
+  disabled?: boolean
+  dismissed?: boolean
+  unmountOnExited?: boolean
+  unmountOnEntered?: boolean
+  unmountOnDisabled?: boolean
+  refreshOn?: DependencyList
+  nodeRef?: ForwardedRef<AnimatorNode>
+  children?: ReactNode
+}
 
 const setNodeRefValue = (
   nodeRef: ForwardedRef<AnimatorNode> | undefined,
@@ -48,8 +59,7 @@ const Animator = (props: AnimatorProps): ReactElement => {
     unmountOnExited,
     unmountOnEntered,
     unmountOnDisabled,
-    checkToSendAction,
-    checkToSend,
+    refreshOn,
     nodeRef,
     children,
     ...settings
@@ -62,8 +72,7 @@ const Animator = (props: AnimatorProps): ReactElement => {
   const dynamicSettingsRef = useRef<AnimatorSettingsPartial | null>(null)
   const foreignRef = useRef<unknown>(null)
   const prevAnimatorRef = useRef<AnimatorInterface | undefined>(undefined)
-  const isFirstRender1Ref = useRef<boolean | null>(true)
-  const isFirstRender2Ref = useRef<boolean | null>(true)
+  const isMountedRef = useRef<boolean>(true)
 
   settingsRef.current = settings
 
@@ -89,21 +98,23 @@ const Animator = (props: AnimatorProps): ReactElement => {
 
     const system: AnimatorSystem = isRoot ? createAnimatorSystem() : parentAnimatorInterface.system
 
-    const getSettings = (): AnimatorSettings => {
+    const getSettings = (): AnimatorSettingsPartial => {
       const animatorGeneralSettings = animatorGeneralInterface?.getSettings()
 
       return {
-        ...ANIMATOR_DEFAULT_SETTINGS,
         ...animatorGeneralSettings,
         ...settingsRef.current,
         ...dynamicSettingsRef.current,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         duration: {
-          ...ANIMATOR_DEFAULT_SETTINGS.duration,
           ...animatorGeneralSettings?.duration,
-          ...settingsRef.current?.duration,
+          ...settingsRef.current.duration,
           ...dynamicSettingsRef.current?.duration
         } as AnimatorDuration,
+        condition: (node: AnimatorNode): boolean =>
+          [settingsRef.current.condition, dynamicSettingsRef.current?.condition]
+            .filter(Boolean)
+            .every((condition) => condition!(node)),
         onTransition: (node: AnimatorNode): void => {
           settingsRef.current?.onTransition?.(node)
           dynamicSettingsRef.current?.onTransition?.(node)
@@ -111,12 +122,8 @@ const Animator = (props: AnimatorProps): ReactElement => {
       }
     }
 
-    const setDynamicSettings = (newSettings: AnimatorSettingsPartial | null): void => {
+    const setSettings = (newSettings: AnimatorSettingsPartial): void => {
       dynamicSettingsRef.current = newSettings
-    }
-
-    const getDynamicSettings = (): AnimatorSettingsPartial | null => {
-      return dynamicSettingsRef.current
     }
 
     const getForeignRef = (): unknown => {
@@ -129,8 +136,7 @@ const Animator = (props: AnimatorProps): ReactElement => {
 
     const control: AnimatorControl = Object.freeze({
       getSettings,
-      setDynamicSettings,
-      getDynamicSettings,
+      setSettings,
       getForeignRef,
       setForeignRef
     })
@@ -155,6 +161,8 @@ const Animator = (props: AnimatorProps): ReactElement => {
 
   useEffect(() => {
     return () => {
+      isMountedRef.current = false
+
       if (prevAnimatorRef.current) {
         prevAnimatorRef.current.system.unregister(prevAnimatorRef.current.node)
       }
@@ -164,18 +172,37 @@ const Animator = (props: AnimatorProps): ReactElement => {
   // Setup on mounted and in case animator is disabled and then re-enabled,
   // trigger the setup once is created again.
   useEffect(() => {
-    animatorInterface?.node.send(ACTIONS.setup)
+    if (!animatorInterface) {
+      return
+    }
+
+    queueMicrotask(() => {
+      if (!isMountedRef.current) {
+        return
+      }
+      animatorInterface.node.send(ACTIONS.setup)
+    })
   }, [!!animatorInterface])
 
   // Trigger updates on animator only after first render, since in the first render
   // the setup event would take care of the initial data procedore.
+  const isFirstRender1Ref = useRef<boolean>(true)
   useEffect(() => {
     if (isFirstRender1Ref.current) {
       isFirstRender1Ref.current = false
       return
     }
 
-    animatorInterface?.node.send(ACTIONS.update)
+    if (!animatorInterface) {
+      return
+    }
+
+    queueMicrotask(() => {
+      if (!isMountedRef.current) {
+        return
+      }
+      animatorInterface.node.send(ACTIONS.update)
+    })
   }, [settings.active, settings.manager, settings.merge, settings.combine])
 
   useEffect(() => {
@@ -192,6 +219,7 @@ const Animator = (props: AnimatorProps): ReactElement => {
     }
   }, [animatorInterface, unmountOnExited, unmountOnEntered, unmountOnDisabled])
 
+  const isFirstRender2Ref = useRef<boolean>(true)
   useEffect(() => {
     if (isFirstRender2Ref.current) {
       isFirstRender2Ref.current = false
@@ -199,9 +227,14 @@ const Animator = (props: AnimatorProps): ReactElement => {
     }
 
     if (animatorInterface) {
-      animatorInterface.node.send(checkToSendAction ?? ACTIONS.refresh)
+      queueMicrotask(() => {
+        if (!isMountedRef.current) {
+          return
+        }
+        animatorInterface.node.send(ACTIONS.refresh)
+      })
     }
-  }, checkToSend ?? [])
+  }, refreshOn ?? [])
 
   return createElement(
     AnimatorContext.Provider,
@@ -210,4 +243,5 @@ const Animator = (props: AnimatorProps): ReactElement => {
   )
 }
 
+export type { AnimatorProps }
 export { Animator }

@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'iconoir-react'
-import { Animator, Animated, Text, BleepsOnAnimator, aa, aaFlicker } from '@arwes/react'
+import { Animator, Animated, Text, BleepsOnAnimator, transition, flicker } from '@arwes/react'
 import type { BleepNames } from '@app/types'
 import { PageContentLayout, Button } from '@app/ui'
 
@@ -35,7 +35,7 @@ const Page = (): ReactElement => {
         }
       `}</style>
 
-      <PageContentLayout animated={aa('y', 12, 0)}>
+      <PageContentLayout animated={transition('y', 12, 0)}>
         <Animator>
           <Text as="h1" fixed>
             Futuristic Sci-Fi UI Web Framework
@@ -43,10 +43,10 @@ const Page = (): ReactElement => {
           <BleepsOnAnimator<BleepNames> transitions={{ entering: 'content' }} continuous />
         </Animator>
         <Animator>
-          <Animated as="hr" animated={aa('scaleX', 0, 1)} />
+          <Animated as="hr" animated={transition('scaleX', 0, 1)} />
         </Animator>
         <Animator>
-          <Animated className="badges" data-arwes-global-block animated={aaFlicker()}>
+          <Animated className="badges" data-arwes-global-block animated={flicker()}>
             <a href="https://npmjs.org/package/arwes" target="_blank">
               <img src="https://img.shields.io/npm/v/arwes.svg?style=flat-square" alt="Version" />
             </a>
@@ -82,7 +82,7 @@ const Page = (): ReactElement => {
             </a>
             <a href="https://discord.gg/s5sbTkw" target="_blank">
               <img
-                src="https://img.shields.io/badge/Discord-Join_Us?style=flat-square&logo=discord&logoColor=%2356F&color=%23505050"
+                src="https://img.shields.io/discord/457381046497968128?color=5865F2&logo=discord&logoColor=white&style=flat-square"
                 alt="Discord"
               />
             </a>
@@ -189,7 +189,7 @@ const Page = (): ReactElement => {
             <Link href="/docs/develop">
               <Button
                 frame="hexagon"
-                animated={[aaFlicker(), aa('x', -12, 0)]}
+                animated={[flicker(), transition('x', -12, 0)]}
                 onHoverAnimateIcons
                 tabIndex={-1}
                 title="Get started"

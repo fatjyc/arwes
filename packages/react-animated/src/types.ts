@@ -22,55 +22,71 @@ export interface AnimatedCSSPropsShorthands {
 export type AnimatedCSSProps = Omit<CSSProperties, keyof AnimatedCSSPropsShorthands> &
   AnimatedCSSPropsShorthands
 
-export type AnimatedSettingsTransitionDefinition = MotionKeyframesDefinition & {
+export type AnimatedTransitionDefinition = MotionKeyframesDefinition & {
   duration?: number
   delay?: AnimationOptionsWithOverrides['delay']
   easing?: AnimationOptionsWithOverrides['easing']
   repeat?: AnimationOptionsWithOverrides['repeat']
+  direction?: AnimationOptionsWithOverrides['direction']
   options?: AnimationOptionsWithOverrides
 }
 
-export interface AnimatedSettingsTransitionFunctionConfig {
+export interface AnimatedTransitionFunctionConfig {
+  /**
+   * Root element.
+   */
   element: HTMLElement | SVGElement
+  /**
+   * Query children elements inside the root element.
+   * @param query - CSS selector.
+   * @returns Array<HTMLElement | SVGElement>
+   */
+  $: <T = HTMLElement | SVGElement>(query: string) => T[]
+  /**
+   * Corresponding animator animation duration.
+   */
   duration: number
 }
 
-export interface AnimatedSettingsTransitionFunctionReturn {
+export interface AnimatedTransitionFunctionReturn {
+  /**
+   * A promise which resolves when the animation is finished.
+   */
+  finished?: Promise<void>
+  /**
+   * Cancel the animation inmediately and remove its underlying animated properties
+   * from the element.
+   */
   cancel: () => void
 }
 
-export type AnimatedSettingsTransitionFunction =
-  | ((config: AnimatedSettingsTransitionFunctionConfig) => AnimatedSettingsTransitionFunctionReturn)
-  | ((config: AnimatedSettingsTransitionFunctionConfig) => void)
+export type AnimatedTransitionFunction =
+  | ((config: AnimatedTransitionFunctionConfig) => AnimatedTransitionFunctionReturn)
+  | ((config: AnimatedTransitionFunctionConfig) => void)
 
-export type AnimatedSettingsTransitionTypes =
-  | AnimatedSettingsTransitionFunction
-  | AnimatedSettingsTransitionDefinition
+export type AnimatedTransitionTypes = AnimatedTransitionFunction | AnimatedTransitionDefinition
 
-export type AnimatedSettingsTransition =
-  | AnimatedSettingsTransitionTypes
-  | AnimatedSettingsTransitionTypes[]
+export type AnimatedTransition = AnimatedTransitionTypes | AnimatedTransitionTypes[]
 
 export interface AnimatedSettings {
   initialAttributes?: HTMLProps<HTMLDivElement> | SVGProps<SVGPathElement>
   initialStyle?: AnimatedCSSProps
   transitions?: {
-    [P in AnimatorState]?: AnimatedSettingsTransition | undefined
-  } & {
-    [P in string]?: AnimatedSettingsTransition | undefined
+    [P in AnimatorState]?: AnimatedTransition | undefined
   }
 }
 
 export type AnimatedProp = AnimatedSettings | Array<AnimatedSettings | undefined> | undefined
 
-export type AnimatedAnimation = AnimatedSettings | AnimatedSettings[]
+export interface AnimatedXSettings<States extends string> {
+  initialAttributes?: HTMLProps<HTMLDivElement> | SVGProps<SVGPathElement>
+  initialStyle?: AnimatedCSSProps
+  transitions?: {
+    [P in States]?: AnimatedTransition | undefined
+  }
+}
 
-export type AnimatedAnimations = { [P in AnimatorState]?: AnimatedAnimation }
-
-export type AnimatedAnimationsCreatorFunction<P = undefined> = (props: P) => AnimatedAnimations
-
-export type AnimatedAnimationsCreator<P = undefined> =
+export type AnimatedXProp<States extends string> =
+  | AnimatedXSettings<States>
+  | Array<AnimatedXSettings<States> | undefined>
   | undefined
-  | false
-  | AnimatedAnimations
-  | AnimatedAnimationsCreatorFunction<P>

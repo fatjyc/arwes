@@ -9,53 +9,54 @@ const AnimatorUIListener = (): ReactElement => {
   const animator = useAnimator()!
 
   useEffect(() => {
+    const element = elementRef.current
+
+    // If the animator are disabled/dismissed, ignore animations.
+    // Also, if the element doesn't exist, ignore animations too.
+    if (!animator || !element) {
+      return
+    }
+
     let animation: { cancel: () => void } | undefined
 
     // A subscription function to be called every time the state changes.
-    const subscriber = (node: AnimatorNode): void => {
-      const element = elementRef.current as HTMLElement
-      const { duration } = node // Getting the duration once is faster.
-
+    const unsubscribe = animator.node.subscribe((node: AnimatorNode) => {
       switch (node.state) {
         case 'entering': {
           animation?.cancel() // Cancel current animation.
           animation = animate(
             element,
-            { x: [0, 100], backgroundColor: ['#0ff', '#ff0'] },
-            { duration: duration.enter }
+            { x: [0, 100], background: ['#0ff', '#ff0'] },
+            { duration: node.settings.duration.enter }
           )
           break
         }
         case 'exiting': {
-          animation?.cancel()
+          animation?.cancel() // Cancel current animation.
           animation = animate(
             element,
-            { x: [100, 0], backgroundColor: ['#ff0', '#0ff'] },
-            { duration: duration.exit }
+            { x: [100, 0], background: ['#ff0', '#0ff'] },
+            { duration: node.settings.duration.exit }
           )
           break
         }
       }
-    }
-
-    animator.node.subscribe(subscriber)
+    })
 
     return () => {
       animation?.cancel()
-      animator.node.unsubscribe(subscriber)
+      unsubscribe()
     }
   }, [animator])
 
-  return (
-    <div ref={elementRef} style={{ margin: 10, width: 40, height: 40, backgroundColor: '#777' }} />
-  )
+  return <div ref={elementRef} style={{ margin: 10, width: 40, height: 40, background: '#777' }} />
 }
 
 const Sandbox = (): ReactElement => {
   const [active, setActive] = useState(true)
 
   useEffect(() => {
-    const tid = setInterval(() => setActive((active) => !active), 2000)
+    const tid = setInterval(() => setActive((active) => !active), 2_000)
     return () => clearInterval(tid)
   }, [])
 

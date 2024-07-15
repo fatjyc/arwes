@@ -10,14 +10,18 @@ import { memo, mergeRefs } from '@arwes/react-tools'
 import { useAnimator } from '@arwes/react-animator'
 import { type CreateBackgroundDotsSettings, createBackgroundDots } from '@arwes/bgs'
 
+import { positionedStyle } from '../internal/styles.js'
+
 interface DotsProps extends CreateBackgroundDotsSettings {
   elementRef?: ForwardedRef<HTMLCanvasElement>
+  id?: string
   className?: string
   style?: CSSProperties
+  positioned?: boolean
 }
 
 const Dots = memo((props: DotsProps): ReactElement => {
-  const { elementRef: elementRefExternal, className, style } = props
+  const { elementRef: elementRefExternal, id, className, style, positioned = true } = props
 
   const animator = useAnimator()
   const elementRef = useRef<HTMLCanvasElement>(null)
@@ -49,8 +53,9 @@ const Dots = memo((props: DotsProps): ReactElement => {
     <canvas
       role="presentation"
       ref={mergeRefs(elementRef, elementRefExternal)}
+      id={id}
       className={cx('arwes-bgs-dots', className)}
-      style={style}
+      style={{ ...(positioned ? positionedStyle : null), ...style }}
     />
   )
 })

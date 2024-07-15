@@ -66,8 +66,7 @@ const createBackgroundGridLines = (
   const draw = (): void => {
     const { lineWidth, lineColor, horizontalLineDash, verticalLineDash, distance } = getSettings()
 
-    const width = canvas.clientWidth
-    const height = canvas.clientHeight
+    const { width, height } = canvas
 
     const xLength = 1 + Math.floor(width / distance)
     const yLength = 1 + Math.floor(height / distance)
@@ -75,8 +74,6 @@ const createBackgroundGridLines = (
     const xMargin = width % distance
     const yMargin = height % distance
 
-    canvas.width = width
-    canvas.height = height
     ctx.clearRect(0, 0, width, height)
 
     ctx.lineWidth = lineWidth
@@ -147,7 +144,7 @@ const createBackgroundGridLines = (
           transitionControl = animate(
             canvas,
             { opacity: [0, 1] },
-            { duration: node.duration.enter }
+            { duration: node.settings.duration.enter }
           )
           break
         }
@@ -160,7 +157,11 @@ const createBackgroundGridLines = (
         }
 
         case 'exiting': {
-          transitionControl = animate(canvas, { opacity: [1, 0] }, { duration: node.duration.exit })
+          transitionControl = animate(
+            canvas,
+            { opacity: [1, 0] },
+            { duration: node.settings.duration.exit }
+          )
           break
         }
 
