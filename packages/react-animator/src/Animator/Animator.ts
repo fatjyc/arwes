@@ -112,9 +112,14 @@ const Animator = (props: AnimatorProps): ReactElement => {
           ...dynamicSettingsRef.current?.duration
         } as AnimatorDuration,
         condition: (node: AnimatorNode): boolean =>
-          [settingsRef.current.condition, dynamicSettingsRef.current?.condition]
-            .filter(Boolean)
-            .every((condition) => condition!(node)),
+          [settingsRef.current.condition, dynamicSettingsRef.current?.condition].every(
+            (condition) =>
+              typeof condition === 'function'
+                ? condition(node)
+                : typeof condition === 'boolean'
+                  ? condition
+                  : true
+          ),
         onTransition: (node: AnimatorNode): void => {
           settingsRef.current?.onTransition?.(node)
           dynamicSettingsRef.current?.onTransition?.(node)

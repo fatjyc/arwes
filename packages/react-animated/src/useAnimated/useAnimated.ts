@@ -79,10 +79,12 @@ const useAnimated = <E extends HTMLElement | SVGElement = HTMLElement>(
           ? 'hidden'
           : 'visible'
 
-      const animatorNodeDuration =
+      const nodeSettings = node.settings
+      const nodeDuration = nodeSettings.duration
+      const transitionDuration =
         node.state === 'entering' || node.state === 'entered'
-          ? node.settings.duration.enter
-          : node.settings.duration.exit
+          ? nodeDuration.enter
+          : nodeDuration.exit
 
       const $ = <T = HTMLElement | SVGElement>(query: string): T[] =>
         Array.from(element.querySelectorAll(query)) as T[]
@@ -98,18 +100,16 @@ const useAnimated = <E extends HTMLElement | SVGElement = HTMLElement>(
             const animation = transition({
               element,
               $,
-              duration: animatorNodeDuration
+              duration: transitionDuration,
+              nodeDuration
             })
 
             if (animation) {
               animationsRef.current.add(animation)
 
-              if (animation.finished) {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                animation.finished.then(() => {
-                  animationsRef.current.delete(animation)
-                })
-              }
+              void animation.finished.then(() => {
+                animationsRef.current.delete(animation)
+              })
             }
           }
           //
@@ -118,7 +118,7 @@ const useAnimated = <E extends HTMLElement | SVGElement = HTMLElement>(
               transition
 
             const animation = animate(element, definition, {
-              duration: duration || animatorNodeDuration,
+              duration: duration || transitionDuration,
               delay,
               easing,
               repeat,
@@ -128,8 +128,7 @@ const useAnimated = <E extends HTMLElement | SVGElement = HTMLElement>(
 
             animationsRef.current.add(animation)
 
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            animation.finished.then(() => {
+            void animation.finished.then(() => {
               animationsRef.current.delete(animation)
             })
           }
