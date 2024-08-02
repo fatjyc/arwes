@@ -7,8 +7,13 @@ interface AnimationProps {
   duration: number
   easing?: Easing
   direction?: 'normal' | 'reverse'
+  /**
+   * Number of times to repeat the animation.
+   * Set to `Infinity` to repeat undefinitely.
+   */
+  repeat?: number
   onUpdate: (progress: number) => void
-  onComplete?: () => void
+  onFinish?: () => void
   onCancel?: () => void
 }
 
@@ -19,22 +24,32 @@ interface Animation {
 }
 
 const createAnimation = (props: AnimationProps): Animation => {
+  if (props.duration !== undefined && props.duration < 0) {
+    throw new Error('Arwes createAnimation() does not support negative durations.')
+  }
+
   const {
     duration: durationProvided,
     easing: easingName = 'outSine',
     direction = 'normal',
+    repeat = 0,
     onUpdate,
-    onComplete,
+    onFinish,
     onCancel
   } = props
 
   const ease = typeof easingName === 'function' ? easingName : easing[easingName]
-  const duration = durationProvided * 1000 // seconds to ms
+  const duration = durationProvided * 1_000 // seconds to ms
 
   let currentAnimationFrame: number | null = null
-  let start = window.performance.now()
+  let start: number
   let slapsed = 0
   let resolvePromise: () => void
+  let repetitions = 0
+
+  const finished = new Promise<void>((resolve) => {
+    resolvePromise = resolve
+  })
 
   const nextAnimation = (timestamp: number): void => {
     if (!start) {
@@ -43,29 +58,26 @@ const createAnimation = (props: AnimationProps): Animation => {
 
     slapsed = Math.max(timestamp - start, 0)
 
-    if (direction === 'reverse') {
-      slapsed = duration - slapsed
+    const progress = ease(duration === 0 ? 1 : Math.min(1, Math.max(0, slapsed / duration)))
+
+    onUpdate(direction === 'normal' ? progress : 1 - progress)
+
+    let continueAnimation = duration > 0 && slapsed < duration
+
+    if (!continueAnimation && repeat > 0 && repetitions < repeat) {
+      start = timestamp
+      continueAnimation = true
+      repetitions++
     }
-
-    const progress = ease(Math.min(1, Math.max(0, slapsed / duration)))
-    const continueAnimation = direction === 'normal' ? slapsed < duration : slapsed > 0
-
-    onUpdate(progress)
 
     if (continueAnimation) {
       currentAnimationFrame = window.requestAnimationFrame(nextAnimation)
     } else {
       currentAnimationFrame = null
-      onComplete?.()
+      onFinish?.()
       resolvePromise()
     }
   }
-
-  currentAnimationFrame = window.requestAnimationFrame(nextAnimation)
-
-  const finished = new Promise<void>((resolve) => {
-    resolvePromise = resolve
-  })
 
   const isPending = (): boolean => {
     return currentAnimationFrame !== null
@@ -75,8 +87,11 @@ const createAnimation = (props: AnimationProps): Animation => {
     if (currentAnimationFrame !== null) {
       window.cancelAnimationFrame(currentAnimationFrame)
       onCancel?.()
+      currentAnimationFrame = null
     }
   }
+
+  currentAnimationFrame = window.requestAnimationFrame(nextAnimation)
 
   return { finished, isPending, cancel }
 }

@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD013 MD028 -->
 
 <div align="center">
-  <img src="./static/arwes.jpg" alt="Arwes" />
+  <img src="./static/arwes.jpg" alt="ARWES" />
 </div>
 
 <p align="center" style="margin-top: 16px; font-size: 1.2rem;">
@@ -10,16 +10,16 @@
 
 <div align="center">
   <a href="https://npmjs.org/package/arwes">
-      <img src="https://img.shields.io/npm/v/arwes.svg?style=flat-square" alt="Version" />
+    <img src="https://img.shields.io/npm/v/arwes.svg?style=flat-square" alt="Version" />
   </a>
   <a href="https://github.com/arwes/arwes/actions">
-      <img src="https://github.com/arwes/arwes/workflows/ci/badge.svg?style=flat-square" alt="CI" />
+    <img src="https://github.com/arwes/arwes/workflows/ci/badge.svg?style=flat-square" alt="CI" />
   </a>
   <a href="https://www.codefactor.io/repository/github/arwes/arwes">
     <img src="https://www.codefactor.io/repository/github/arwes/arwes/badge" alt="CodeFactor" />
   </a>
   <a href="https://github.com/arwes/arwes">
-      <img src="https://img.shields.io/github/stars/arwes/arwes.svg?style=flat-square&label=stars" alt="Github Stars" />
+    <img src="https://img.shields.io/github/stars/arwes/arwes.svg?style=flat-square&label=stars" alt="Github Stars" />
   </a>
   <a href="https://npmjs.org/package/arwes">
     <img src="https://img.shields.io/npm/dm/arwes?label=installs&style=flat-square" alt="npm" />
@@ -37,13 +37,7 @@
 
 ---
 
-[Arwes](https://arwes.dev) is a web framework to build user interfaces based on
-futuristic science fiction designs, animations, and sound effects. The concepts
-behind are opinionated with influences from [Cyberprep](https://aesthetics.fandom.com/wiki/Cyberprep)
-and [Synthwave](https://en.wikipedia.org/wiki/Synthwave),
-and productions like [Star Citizen](http://robertsspaceindustries.com),
-[Halo](https://www.halowaypoint.com/en-us/games), and [TRON: Legacy](http://www.imdb.com/title/tt1104001).
-It tries to inspire advanced science and technology.
+[ARWES](https://arwes.dev) is a web framework to build user interfaces based on futuristic science fiction designs, animations, and sound effects. The concepts behind are opinionated with influences from [Cyberprep](https://aesthetics.fandom.com/wiki/Cyberprep) and productions like [Star Citizen](http://robertsspaceindustries.com), [Halo](https://www.halowaypoint.com/en-us/games), [Deus Ex](https://www.eidosmontreal.com/games/deus-ex-mankind-divided), and [NIKKE](https://nikke-en.com). It tries to inspire advanced science and technology.
 
 > The project is under development and not ready for production yet. It is still in
 > [alpha release](https://stackoverflow.com/questions/40067469), so the components
@@ -68,37 +62,62 @@ It tries to inspire advanced science and technology.
 
 ## Packages
 
+ARWES packages are categorized by vanilla and implementation packages. ARWES vanilla packages do not have
+major external dependencies, while the implementation packages depend on specific frameworks to simplify
+their use and add custom UI components.
+
+Their functionalities can be for visual design, motion design, audio design, or UI implementation.
+The [ARWES Playground](https://arwes.dev/play) can be used to experiment with various API use cases in
+real-time in browser.
+
 ### Vanilla
 
-| Package           | Status      | Description                                                       |
-| ----------------- | ----------- | ----------------------------------------------------------------- |
-| `@arwes/tools`    | Polishing   | General React API tools                                           |
-| `@arwes/theme`    | Polishing   | Color, units, and general purpose dynamic theming tools           |
-| `@arwes/styles`   | Polishing   | Special styling utilities                                         |
-| `@arwes/animated` | Polishing   | HTML element animation utilities                                  |
-| `@arwes/animator` | Polishing   | Assemble and disassemble user interfaces using animation controls |
-| `@arwes/bleeps`   | Polishing   | Define, manage, and control interactive short sound effects       |
-| `@arwes/text`     | Polishing   | Text rendering effect tools                                       |
-| `@arwes/frames`   | Development | Build responsive vector graphics components                       |
-| `@arwes/bgs`      | Development | Passive background effects                                        |
-| `@arwes/core`     | Development | Integration functionalities                                       |
-| `arwes`           | Polishing   | All vanilla packages bundle                                       |
+[![bundle size](https://img.shields.io/bundlephobia/minzip/arwes.svg)](https://bundlephobia.com/package/arwes)
+[![installs](https://img.shields.io/npm/dm/arwes?label=installs&style=flat-square)](https://bundlephobia.com/package/arwes)
+
+Vanilla packages do not have major external dependencies but most tools are low-to-medium level APIs
+and sometimes require elaborated setups/configurations.
+
+| Package           | Status      | Description                         |
+| ----------------- | ----------- | ----------------------------------- |
+| `@arwes/tools`    | Polishing   | General browser utilities           |
+| `@arwes/theme`    | Polishing   | Visual themes scaffolding           |
+| `@arwes/styles`   | Polishing   | Special visual styles               |
+| `@arwes/animator` | Polishing   | Interfaces assembling               |
+| `@arwes/animated` | Polishing   | Animation sequences effects         |
+| `@arwes/bleeps`   | Polishing   | Short sounds management             |
+| `@arwes/text`     | Polishing   | Text rendering effects              |
+| `@arwes/frames`   | Development | Responsive scalable vector graphics |
+| `@arwes/bgs`      | Development | Passive background ambiences        |
+| `@arwes/core`     | Development | Integration functionalities         |
+| `arwes`           | Polishing   | All vanilla packages bundle         |
 
 ### React
 
-| Package                 | Status      | Description                                 |
-| ----------------------- | ----------- | ------------------------------------------- |
-| `@arwes/react-tools`    | Polishing   | General browser API tools                   |
-| `@arwes/react-animator` | Polishing   | Animator interface tools                    |
-| `@arwes/react-animated` | Polishing   | Animated elements using animator tools      |
-| `@arwes/react-bleeps`   | Polishing   | Interactive short sound effects manager     |
-| `@arwes/react-text`     | Polishing   | Text effect components                      |
-| `@arwes/react-frames`   | Development | Build responsive vector graphics components |
-| `@arwes/react-bgs`      | Development | Passive background effects                  |
-| `@arwes/react-core`     | Polishing   | Integration components                      |
-| `@arwes/react`          | Polishing   | All vanilla and React packages bundle       |
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@arwes/react.svg)](https://bundlephobia.com/package/@arwes/react)
+[![installs](https://img.shields.io/npm/dm/@arwes/react?label=installs&style=flat-square)](https://bundlephobia.com/package/@arwes/react)
+
+ARWES offers [React](https://react.dev) v18 specific packages with SSR support.
+ARWES does not work with React strict mode nor React Server Components.
+
+| Package                 | Status      | Description                               |
+| ----------------------- | ----------- | ----------------------------------------- |
+| `@arwes/react-tools`    | Polishing   | React general utilities                   |
+| `@arwes/react-animator` | Polishing   | React interfaces assembling               |
+| `@arwes/react-animated` | Polishing   | React elements animations                 |
+| `@arwes/react-bleeps`   | Polishing   | React short sounds management             |
+| `@arwes/react-text`     | Polishing   | React text rendering effects              |
+| `@arwes/react-frames`   | Development | React responsive scalable vector graphics |
+| `@arwes/react-bgs`      | Development | React passive background ambiences        |
+| `@arwes/react-core`     | Polishing   | React integration functionalities         |
+| `@arwes/react`          | Polishing   | All vanilla and React packages bundle     |
 
 ### Solid
+
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@arwes/solid.svg)](https://bundlephobia.com/package/@arwes/solid)
+[![installs](https://img.shields.io/npm/dm/@arwes/solid?label=installs&style=flat-square)](https://bundlephobia.com/package/@arwes/solid)
+
+ARWES offers [Solid](https://solidjs.com) v1 specific packages with SSR support.
 
 | Package                 | Status      | Description                           |
 | ----------------------- | ----------- | ------------------------------------- |
@@ -143,7 +162,7 @@ Review [frequently asked questions](./FAQ.md) and [code of conduct](./.github/CO
 
 ## Roadmap
 
-Check out the [Arwes Project Boards](https://github.com/orgs/arwes/projects).
+Check out the [ARWES Project Boards](https://github.com/orgs/arwes/projects).
 
 ## Contributors
 

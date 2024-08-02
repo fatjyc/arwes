@@ -1,11 +1,12 @@
-import { randomizeList } from '@arwes/tools'
+import { filterProps, randomizeList } from '@arwes/tools'
 import { type Animation, createAnimation } from '@arwes/animated'
 
 import type { TextTransitionProps } from '../types.js'
 import { walkTextNodes } from '../internal/walkTextNodes/index.js'
 import { setTextNodesContent } from '../internal/setTextNodesContent/index.js'
 
-const LETTERS = 'abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ>!·$%&/()=?¿≤|@#'
+const LETTERS =
+  '                   abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ>!·$%&/()=?¿≤|@#'
 
 const transitionTextDecipher = (props: TextTransitionProps): Animation => {
   const {
@@ -16,7 +17,7 @@ const transitionTextDecipher = (props: TextTransitionProps): Animation => {
     isEntering = true,
     hideOnExited = true,
     hideOnEntered
-  } = props
+  } = filterProps(props)
 
   // If no valid elements are provided, return an void animation for type safety.
   if (!rootElement || !contentElement) {
@@ -30,10 +31,7 @@ const transitionTextDecipher = (props: TextTransitionProps): Animation => {
   const cloneElement = contentElement.cloneNode(true) as HTMLElement
   Object.assign(cloneElement.style, {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    inset: 0,
     visibility: 'visible',
     opacity: 1
   })
@@ -89,7 +87,7 @@ const transitionTextDecipher = (props: TextTransitionProps): Animation => {
 
       setTextNodesContent(textNodes, textsCurrent, length)
     },
-    onComplete: () => {
+    onFinish: () => {
       contentElement.style.visibility =
         (isEntering && hideOnEntered) || (!isEntering && hideOnExited) ? 'hidden' : 'visible'
       cloneElement.remove()
