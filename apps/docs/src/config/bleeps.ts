@@ -9,52 +9,29 @@ export type BleepNames =
   | 'intro'
   | 'content'
   | 'type'
+  | 'hover'
   | 'assemble'
 
 export const bleepsSettings: BleepsProviderSettings<BleepNames> = {
-  master: { volume: 0.8 },
+  master: { volume: 0.5 },
+  common: { muteOnWindowBlur: true },
   categories: {
-    background: { volume: 0.3 },
+    background: { volume: 0.25 },
     transition: { volume: 0.5 },
-    interaction: { volume: 0.7 },
+    interaction: { volume: 0.75 },
     notification: { volume: 1 }
   },
   bleeps: {
-    click: {
-      category: 'interaction',
+    // Background bleeps.
+    hover: {
+      category: 'background',
       sources: [
-        { src: '/assets/sounds/click.webm', type: 'audio/webm' },
-        { src: '/assets/sounds/click.mp3', type: 'audio/mpeg' }
+        { src: '/assets/sounds/hover.webm', type: 'audio/webm' },
+        { src: '/assets/sounds/hover.mp3', type: 'audio/mpeg' }
       ]
     },
-    open: {
-      category: 'interaction',
-      sources: [
-        { src: '/assets/sounds/open.webm', type: 'audio/webm' },
-        { src: '/assets/sounds/open.mp3', type: 'audio/mpeg' }
-      ]
-    },
-    close: {
-      category: 'interaction',
-      sources: [
-        { src: '/assets/sounds/close.webm', type: 'audio/webm' },
-        { src: '/assets/sounds/close.mp3', type: 'audio/mpeg' }
-      ]
-    },
-    info: {
-      category: 'notification',
-      sources: [
-        { src: '/assets/sounds/info.webm', type: 'audio/webm' },
-        { src: '/assets/sounds/info.mp3', type: 'audio/mpeg' }
-      ]
-    },
-    error: {
-      category: 'notification',
-      sources: [
-        { src: '/assets/sounds/error.webm', type: 'audio/webm' },
-        { src: '/assets/sounds/error.mp3', type: 'audio/mpeg' }
-      ]
-    },
+
+    // Transition bleeps.
     intro: {
       category: 'transition',
       sources: [
@@ -84,6 +61,45 @@ export const bleepsSettings: BleepsProviderSettings<BleepNames> = {
         { src: '/assets/sounds/assemble.mp3', type: 'audio/mpeg' }
       ],
       loop: true
+    },
+
+    // Interaction bleeps.
+    click: {
+      category: 'interaction',
+      sources: [
+        { src: '/assets/sounds/click.webm', type: 'audio/webm' },
+        { src: '/assets/sounds/click.mp3', type: 'audio/mpeg' }
+      ]
+    },
+    open: {
+      category: 'interaction',
+      sources: [
+        { src: '/assets/sounds/open.webm', type: 'audio/webm' },
+        { src: '/assets/sounds/open.mp3', type: 'audio/mpeg' }
+      ]
+    },
+    close: {
+      category: 'interaction',
+      sources: [
+        { src: '/assets/sounds/close.webm', type: 'audio/webm' },
+        { src: '/assets/sounds/close.mp3', type: 'audio/mpeg' }
+      ]
+    },
+
+    // Notification bleeps.
+    info: {
+      category: 'notification',
+      sources: [
+        { src: '/assets/sounds/info.webm', type: 'audio/webm' },
+        { src: '/assets/sounds/info.mp3', type: 'audio/mpeg' }
+      ]
+    },
+    error: {
+      category: 'notification',
+      sources: [
+        { src: '/assets/sounds/error.webm', type: 'audio/webm' },
+        { src: '/assets/sounds/error.mp3', type: 'audio/mpeg' }
+      ]
     }
   }
 }

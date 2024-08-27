@@ -1,5 +1,5 @@
 import { type Animation, easing, createAnimation } from '@arwes/animated'
-import type { AnimatorInterface } from '@arwes/animator'
+import type { AnimatorNode } from '@arwes/animator'
 
 interface CreateBackgroundPuffsSettings {
   /**
@@ -47,9 +47,9 @@ interface CreateBackgroundPuffsSettings {
 }
 
 interface CreateBackgroundPuffsProps {
-  settings: { current: CreateBackgroundPuffsSettings }
   canvas: HTMLCanvasElement
-  animator?: AnimatorInterface
+  animator?: AnimatorNode
+  settingsRef: { current: CreateBackgroundPuffsSettings }
 }
 
 interface CreateBackgroundPuffs {
@@ -97,7 +97,7 @@ const createBackgroundPuffs = (props: CreateBackgroundPuffsProps): CreateBackgro
 
   const getSettings = (): Required<CreateBackgroundPuffsSettings> => ({
     ...defaultProps,
-    ...props.settings.current
+    ...props.settingsRef.current
   })
 
   const createPuff = (width: number, height: number): Puff => {
@@ -186,7 +186,7 @@ const createBackgroundPuffs = (props: CreateBackgroundPuffsProps): CreateBackgro
 
     const {
       duration: { interval = 2, intervalPause = 0 }
-    } = animator.node.settings
+    } = animator.settings
 
     runningControl?.cancel()
     runningControl = createAnimation({
@@ -239,7 +239,7 @@ const createBackgroundPuffs = (props: CreateBackgroundPuffsProps): CreateBackgro
       return
     }
 
-    unsubscribe = animator.node.subscribe((node) => {
+    unsubscribe = animator.subscribe((node) => {
       switch (node.state) {
         case 'entering': {
           setup()

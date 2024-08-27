@@ -37,7 +37,7 @@
 
 ---
 
-[ARWES](https://arwes.dev) is a web framework to build user interfaces based on futuristic science fiction designs, animations, and sound effects. The concepts behind are opinionated with influences from [Cyberprep](https://aesthetics.fandom.com/wiki/Cyberprep) and productions like [Star Citizen](http://robertsspaceindustries.com), [Halo](https://www.halowaypoint.com/en-us/games), [Deus Ex](https://www.eidosmontreal.com/games/deus-ex-mankind-divided), and [NIKKE](https://nikke-en.com). It tries to inspire advanced science and technology.
+[ARWES](https://arwes.dev) is a web framework to build user interfaces based on futuristic science fiction designs, animations, and sound effects. The concepts behind are opinionated with influences from [Cyberprep](https://aesthetics.fandom.com/wiki/Cyberprep) and productions like [Star Citizen](http://robertsspaceindustries.com), [Halo](https://www.halowaypoint.com/en-us/games), [NIKKE](https://nikke-en.com), and [Mecha Break](https://www.mechabreak.com/index). It tries to inspire advanced science and technology.
 
 > The project is under development and not ready for production yet. It is still in
 > [alpha release](https://stackoverflow.com/questions/40067469), so the components
@@ -62,35 +62,14 @@
 
 ## Packages
 
-ARWES packages are categorized by vanilla and implementation packages. ARWES vanilla packages do not have
-major external dependencies, while the implementation packages depend on specific frameworks to simplify
-their use and add custom UI components.
-
-Their functionalities can be for visual design, motion design, audio design, or UI implementation.
-The [ARWES Playground](https://arwes.dev/play) can be used to experiment with various API use cases in
-real-time in browser.
-
 ### Vanilla
 
 [![bundle size](https://img.shields.io/bundlephobia/minzip/arwes.svg)](https://bundlephobia.com/package/arwes)
 [![installs](https://img.shields.io/npm/dm/arwes?label=installs&style=flat-square)](https://bundlephobia.com/package/arwes)
 
-Vanilla packages do not have major external dependencies but most tools are low-to-medium level APIs
-and sometimes require elaborated setups/configurations.
-
-| Package           | Status      | Description                         |
-| ----------------- | ----------- | ----------------------------------- |
-| `@arwes/tools`    | Polishing   | General browser utilities           |
-| `@arwes/theme`    | Polishing   | Visual themes scaffolding           |
-| `@arwes/styles`   | Polishing   | Special visual styles               |
-| `@arwes/animator` | Polishing   | Interfaces assembling               |
-| `@arwes/animated` | Polishing   | Animation sequences effects         |
-| `@arwes/bleeps`   | Polishing   | Short sounds management             |
-| `@arwes/text`     | Polishing   | Text rendering effects              |
-| `@arwes/frames`   | Development | Responsive scalable vector graphics |
-| `@arwes/bgs`      | Development | Passive background ambiences        |
-| `@arwes/core`     | Development | Integration functionalities         |
-| `arwes`           | Polishing   | All vanilla packages bundle         |
+Core of the framework. Vanilla packages do not have major external dependencies but most tools are
+low level APIs and sometimes require elaborated setups. Other implementation packages
+simplify its use.
 
 ### React
 
@@ -99,30 +78,6 @@ and sometimes require elaborated setups/configurations.
 
 ARWES offers [React](https://react.dev) v18 specific packages with SSR support.
 ARWES does not work with React strict mode nor React Server Components.
-
-| Package                 | Status      | Description                               |
-| ----------------------- | ----------- | ----------------------------------------- |
-| `@arwes/react-tools`    | Polishing   | React general utilities                   |
-| `@arwes/react-animator` | Polishing   | React interfaces assembling               |
-| `@arwes/react-animated` | Polishing   | React elements animations                 |
-| `@arwes/react-bleeps`   | Polishing   | React short sounds management             |
-| `@arwes/react-text`     | Polishing   | React text rendering effects              |
-| `@arwes/react-frames`   | Development | React responsive scalable vector graphics |
-| `@arwes/react-bgs`      | Development | React passive background ambiences        |
-| `@arwes/react-core`     | Polishing   | React integration functionalities         |
-| `@arwes/react`          | Polishing   | All vanilla and React packages bundle     |
-
-### Solid
-
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@arwes/solid.svg)](https://bundlephobia.com/package/@arwes/solid)
-[![installs](https://img.shields.io/npm/dm/@arwes/solid?label=installs&style=flat-square)](https://bundlephobia.com/package/@arwes/solid)
-
-ARWES offers [Solid](https://solidjs.com) v1 specific packages with SSR support.
-
-| Package                 | Status      | Description                           |
-| ----------------------- | ----------- | ------------------------------------- |
-| `@arwes/solid-animator` | Development | Animator interface tools              |
-| `@arwes/solid`          | Development | All vanilla and Solid packages bundle |
 
 ## Community
 
@@ -158,8 +113,6 @@ ARWES offers [Solid](https://solidjs.com) v1 specific packages with SSR support.
 Open [a GitHub issue](https://github.com/arwes/arwes/issues/new/choose) or let's
 chat on [Discord](https://discord.gg/s5sbTkw).
 
-Review [frequently asked questions](./FAQ.md) and [code of conduct](./.github/CODE_OF_CONDUCT.md).
-
 ## Roadmap
 
 Check out the [ARWES Project Boards](https://github.com/orgs/arwes/projects).
@@ -181,6 +134,7 @@ Check out the [ARWES Project Boards](https://github.com/orgs/arwes/projects).
     <tr>
       <td align="center" valign="top" width="20%"><a href="https://github.com/StephenCodesThings"><img src="https://avatars.githubusercontent.com/u/126058?v=4?s=140" width="140px;" alt="Stephen Bennett"/><br /><sub><b>Stephen Bennett</b></sub></a><br /><a href="https://github.com/arwes/arwes/issues?q=author%3AStephenCodesThings" title="Bug reports">🐛</a> <a href="https://github.com/arwes/arwes/commits?author=StephenCodesThings" title="Code">💻</a></td>
       <td align="center" valign="top" width="20%"><a href="https://github.com/TheNetAdmin"><img src="https://avatars.githubusercontent.com/u/18525442?v=4?s=140" width="140px;" alt="Zixuan Wang"/><br /><sub><b>Zixuan Wang</b></sub></a><br /><a href="https://github.com/arwes/arwes/issues?q=author%3ATheNetAdmin" title="Bug reports">🐛</a> <a href="https://github.com/arwes/arwes/commits?author=TheNetAdmin" title="Code">💻</a></td>
+      <td align="center" valign="top" width="20%"><a href="https://www.frityet.net/"><img src="https://avatars.githubusercontent.com/u/25426233?v=4?s=140" width="140px;" alt="Frityet"/><br /><sub><b>Frityet</b></sub></a><br /><a href="#financial-Frityet" title="Financial">💵</a></td>
     </tr>
   </tbody>
 </table>
@@ -190,11 +144,11 @@ Check out the [ARWES Project Boards](https://github.com/orgs/arwes/projects).
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors)
-specification.
+_This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors)
+specification._
 
 ## Want to contribute?
 
 The project is not fully open for sustancial contributions yet until the
 first beta version is released. Follow the development on
-[Discord](https://discord.gg/s5sbTkw) and [Twitter](https://twitter.com/arwesjs).
+[Discord](https://discord.gg/s5sbTkw) and [X (Twitter)](https://x.com/arwesjs).

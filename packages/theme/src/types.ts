@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+
 import type { Properties as CSSProperties } from 'csstype'
 import type { PartialDeep } from '@arwes/tools'
 
@@ -9,22 +11,30 @@ export type ThemeSettingsMultiplier = number | number[] | ThemeSettingsMultiplie
 export type ThemeSettingsUnitFunction = (index: number) => string
 export type ThemeSettingsUnit = string[] | ThemeSettingsUnitFunction
 
+export type ThemeSettingsColorNames = 'hsl' | 'rgb' | 'lch' | 'hwb'
+export type ThemeSettingsColorSeries = Array<string | [number, number, number, number?]>
+export type ThemeSettingsColorFunction = (
+  index: number
+) => [number, number, number, number?] | string
 export type ThemeSettingsColor =
-  | Array<[number, number, number, number?] | string>
-  | ((index: number) => [number, number, number, number?] | string)
+  | ThemeSettingsColorSeries
+  | ThemeSettingsColorFunction
+  | {
+      color: ThemeSettingsColorNames
+      list?: ThemeSettingsColorSeries
+      create?: ThemeSettingsColorFunction
+    }
 
 export type ThemeSettingsStyle = ThemeStyleValue[]
 
-export interface ThemeSettingsBreakpointsKeyListItem<
-  Keys extends string | number = string | number
-> {
+export interface ThemeSettingsBreakpointsKeyListItem<Keys extends string = string> {
   key: Keys
   value: string
 }
 
-export type ThemeSettingsBreakpoints<Keys extends string | number = string | number> =
-  | string[]
-  | Array<ThemeSettingsBreakpointsKeyListItem<Keys>>
+export type ThemeSettingsBreakpoints<Keys extends string = string> = Array<
+  ThemeSettingsBreakpointsKeyListItem<Keys>
+>
 
 // Theme Consumer
 
@@ -40,12 +50,16 @@ export type ThemeColor = (index: number, options?: ThemeColorOptions) => string
 export type ThemeStyleValue = CSSProperties
 export type ThemeStyle = (index: number) => ThemeStyleValue
 
-export interface ThemeBreakpoints<Keys extends string | number = string | number> {
+export interface ThemeBreakpoints<Keys extends string = string> {
   breakpoints: Keys[]
   settings: ThemeSettingsBreakpoints<Keys>
-  up: (key: Keys, opts?: { strip?: boolean }) => string
-  down: (key: Keys, opts?: { strip?: boolean }) => string
-  between: (startKey: Keys, endKey: Keys, opts?: { strip?: boolean }) => string
+  up: (key: Keys | (string & {}), opts?: { strip?: boolean }) => string
+  down: (key: Keys | (string & {}), opts?: { strip?: boolean }) => string
+  between: (
+    startKey: Keys | (string & {}),
+    endKey: Keys | (string & {}),
+    opts?: { strip?: boolean }
+  ) => string
 }
 
 // Theme Creators

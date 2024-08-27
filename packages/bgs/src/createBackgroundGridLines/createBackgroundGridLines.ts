@@ -1,5 +1,5 @@
 import { type Animation, createAnimation } from '@arwes/animated'
-import type { AnimatorInterface } from '@arwes/animator'
+import type { AnimatorNode } from '@arwes/animator'
 
 interface CreateBackgroundGridLinesSettings {
   lineWidth?: number
@@ -13,9 +13,9 @@ interface CreateBackgroundGridLinesSettings {
 }
 
 interface CreateBackgroundGridLinesProps {
-  settings: { current: CreateBackgroundGridLinesSettings }
   canvas: HTMLCanvasElement
-  animator?: AnimatorInterface
+  animator?: AnimatorNode
+  settingsRef: { current: CreateBackgroundGridLinesSettings }
 }
 
 interface CreateBackgroundGridLines {
@@ -47,7 +47,7 @@ const createBackgroundGridLines = (
 
   const getSettings = (): Required<CreateBackgroundGridLinesSettings> => ({
     ...defaultProps,
-    ...props.settings.current
+    ...props.settingsRef.current
   })
 
   const resize = (): void => {
@@ -136,7 +136,7 @@ const createBackgroundGridLines = (
       return
     }
 
-    unsubscribe = animator.node.subscribe((node) => {
+    unsubscribe = animator.subscribe((node) => {
       switch (node.state) {
         case 'entering': {
           setup()

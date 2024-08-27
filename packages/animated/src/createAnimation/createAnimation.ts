@@ -1,4 +1,5 @@
-import { type Easing, easing } from '../easing/index.js'
+import type { Easing } from '../types.js'
+import { easing } from '../easing/index.js'
 
 interface AnimationProps {
   /**
@@ -18,9 +19,10 @@ interface AnimationProps {
 }
 
 interface Animation {
-  finished: Promise<void>
+  then: (callback?: () => void) => Promise<void>
   isPending: () => boolean
   cancel: () => void
+  complete: () => void
 }
 
 const createAnimation = (props: AnimationProps): Animation => {
@@ -44,12 +46,14 @@ const createAnimation = (props: AnimationProps): Animation => {
   let currentAnimationFrame: number | null = null
   let start: number
   let slapsed = 0
-  let resolvePromise: () => void
+  let done: () => void
   let repetitions = 0
 
-  const finished = new Promise<void>((resolve) => {
-    resolvePromise = resolve
+  const promise = new Promise<void>((resolve) => {
+    done = resolve
   })
+
+  const then = (callback?: () => void): Promise<void> => promise.then(callback)
 
   const nextAnimation = (timestamp: number): void => {
     if (!start) {
@@ -75,7 +79,7 @@ const createAnimation = (props: AnimationProps): Animation => {
     } else {
       currentAnimationFrame = null
       onFinish?.()
-      resolvePromise()
+      done()
     }
   }
 
@@ -86,14 +90,25 @@ const createAnimation = (props: AnimationProps): Animation => {
   const cancel = (): void => {
     if (currentAnimationFrame !== null) {
       window.cancelAnimationFrame(currentAnimationFrame)
-      onCancel?.()
       currentAnimationFrame = null
+      onCancel?.()
+      done()
+    }
+  }
+
+  const complete = (): void => {
+    if (currentAnimationFrame !== null) {
+      window.cancelAnimationFrame(currentAnimationFrame)
+      currentAnimationFrame = null
+      onUpdate(ease(direction === 'reverse' ? 0 : 1))
+      onFinish?.()
+      done()
     }
   }
 
   currentAnimationFrame = window.requestAnimationFrame(nextAnimation)
 
-  return { finished, isPending, cancel }
+  return Object.freeze({ then, isPending, cancel, complete })
 }
 
 export type { AnimationProps, Animation }

@@ -2,7 +2,7 @@
 
 import React, { type ReactNode } from 'react'
 import { AnimatorGeneralProvider, BleepsProvider, Animator } from '@arwes/react'
-import { Titillium_Web } from 'next/font/google'
+import { Titillium_Web, Source_Code_Pro } from 'next/font/google'
 import { IconoirProvider } from 'iconoir-react'
 import { useAtom } from 'jotai'
 
@@ -18,7 +18,13 @@ import { Background, Header } from '@/ui'
 
 const fontTitilliumWeb = Titillium_Web({
   subsets: ['latin'],
-  weight: ['300', '400', '600', '700'],
+  weight: ['300', '600'],
+  preload: false
+})
+
+const fontSourceCodePro = Source_Code_Pro({
+  subsets: ['latin'],
+  weight: ['400'],
   preload: false
 })
 
@@ -29,18 +35,21 @@ const LayoutRoot = (props: { children: ReactNode }): JSX.Element => {
   return (
     <IconoirProvider {...iconProviderProps}>
       <AnimatorGeneralProvider {...animatorGeneralSettings} disabled={!isMotionEnabled}>
-        <BleepsProvider {...bleepsSettings} common={{ disabled: !isAudioEnabled }}>
+        <BleepsProvider
+          {...bleepsSettings}
+          common={{ ...bleepsSettings.common, disabled: !isAudioEnabled }}
+        >
           <div
             className="absolute inset-0 overflow-hidden flex flex-col"
             style={{
               // @ts-expect-error link `next/font` font families to TailwindCSS
-              '--app-font-family-title': fontTitilliumWeb.style.fontFamily,
               '--app-font-family-header': fontTitilliumWeb.style.fontFamily,
               '--app-font-family-body': fontTitilliumWeb.style.fontFamily,
               '--app-font-family-cta': fontTitilliumWeb.style.fontFamily,
-              '--app-font-family-code': '',
-              '--app-scrollbar-color': theme.colors.secondary.main(4),
-              '--app-scrollbar-color-hover': theme.colors.secondary.high(2)
+              '--app-font-family-code': fontSourceCodePro.style.fontFamily,
+
+              scrollbarWidth: 'thin',
+              scrollbarColor: `${theme.colors.secondary.main(7)} transparent`
             }}
           >
             <Animator combine>

@@ -2,7 +2,6 @@ import {
   type HTMLProps,
   type SVGProps,
   type CSSProperties,
-  type ReactElement,
   type ForwardedRef,
   type ReactNode,
   createElement,
@@ -10,13 +9,12 @@ import {
   useMemo
 } from 'react'
 
-import { type NoInfer } from '@arwes/tools'
-import { mergeRefs } from '@arwes/react-tools'
-import { type AnimatorNode } from '@arwes/animator'
+import type { NoInfer } from '@arwes/tools'
+import { memo, mergeRefs } from '@arwes/react-tools'
+import type { AnimatorNode } from '@arwes/animator'
 import { useAnimator } from '@arwes/react-animator'
+import { type AnimatedProp, formatAnimatedCSSPropsShorthands } from '@arwes/animated'
 
-import type { AnimatedProp } from '../types.js'
-import { formatAnimatedCSSPropsShorthands } from '../internal/formatAnimatedCSSPropsShorthands/index.js'
 import { useAnimated } from '../useAnimated/index.js'
 
 interface AnimatedProps<E extends HTMLElement | SVGElement = HTMLDivElement> {
@@ -31,12 +29,12 @@ interface AnimatedProps<E extends HTMLElement | SVGElement = HTMLDivElement> {
   children?: ReactNode
 }
 
-const Animated = <
+const AnimatedComponent = <
   E extends HTMLElement | SVGElement = HTMLDivElement,
   P = E extends HTMLElement ? HTMLProps<E> : SVGProps<E>
 >(
   props: AnimatedProps<E> & NoInfer<P>
-): ReactElement => {
+): JSX.Element => {
   const {
     as: asProvided,
     animated,
@@ -52,9 +50,6 @@ const Animated = <
   const animator = useAnimator()
   const as = useMemo(() => asProvided || 'div', [])
   const elementRef = useRef<E | null>(null)
-  const propsRef = useRef<AnimatedProps<E>>(props)
-
-  propsRef.current = props
 
   useAnimated(elementRef, animated, {
     renderInitials: false,
@@ -94,11 +89,11 @@ const Animated = <
         ((hideOnExited && animator.node.state === 'exited') ||
           (hideOnEntered && animator.node.state === 'entered'))
           ? 'hidden'
-          : 'visible',
+          : '',
       ...dynamicStyles
     }
   })
 }
 
 export type { AnimatedProps }
-export { Animated }
+export const Animated = memo(AnimatedComponent)

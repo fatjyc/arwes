@@ -25,9 +25,9 @@ const Puffs = memo((props: PuffsProps): ReactElement => {
 
   const animator = useAnimator()
   const elementRef = useRef<HTMLCanvasElement>(null)
-  const propsRef = useRef(props)
+  const settingsRef = useRef(props)
 
-  propsRef.current = props
+  settingsRef.current = props
 
   useEffect(() => {
     const canvas = elementRef.current
@@ -37,16 +37,14 @@ const Puffs = memo((props: PuffsProps): ReactElement => {
     }
 
     const background = createBackgroundPuffs({
-      settings: propsRef,
       canvas,
-      animator
+      animator: animator?.node,
+      settingsRef
     })
 
     background.start()
 
-    return () => {
-      background.stop()
-    }
+    return () => background.stop()
   }, [animator])
 
   return (

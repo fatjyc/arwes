@@ -1,5 +1,5 @@
 import { type Easing, type Animation, easing, createAnimation } from '@arwes/animated'
-import type { AnimatorInterface } from '@arwes/animator'
+import type { AnimatorNode } from '@arwes/animator'
 
 import { getDistanceFromOriginToCornerProgress } from './getDistanceFromOriginToCornerProgress.js'
 
@@ -44,9 +44,9 @@ interface CreateBackgroundDotsSettings {
 }
 
 interface CreateBackgroundDotsProps {
-  settings: { current: CreateBackgroundDotsSettings }
   canvas: HTMLCanvasElement
-  animator?: AnimatorInterface
+  animator?: AnimatorNode
+  settingsRef: { current: CreateBackgroundDotsSettings }
 }
 
 interface CreateBackgroundDots {
@@ -81,7 +81,7 @@ const createBackgroundDots = (props: CreateBackgroundDotsProps): CreateBackgroun
 
   const getSettings = (): Required<CreateBackgroundDotsSettings> => ({
     ...defaultProps,
-    ...props.settings.current
+    ...props.settingsRef.current
   })
 
   const resize = (): void => {
@@ -186,7 +186,7 @@ const createBackgroundDots = (props: CreateBackgroundDotsProps): CreateBackgroun
         resize()
 
         if (animator) {
-          switch (animator.node.state) {
+          switch (animator.state) {
             case 'entered': {
               draw(true, 1)
               break
@@ -218,7 +218,7 @@ const createBackgroundDots = (props: CreateBackgroundDotsProps): CreateBackgroun
       return
     }
 
-    unsubscribe = animator.node.subscribe((node) => {
+    unsubscribe = animator.subscribe((node) => {
       const settings = getSettings()
 
       switch (node.state) {

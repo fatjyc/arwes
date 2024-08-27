@@ -1,19 +1,18 @@
 import { Children, useRef, type ReactNode } from 'react'
 import {
+  cx,
+  memo,
   Animated,
   Animator,
-  cx,
-  fade,
-  flicker,
   FrameSVGKranox,
-  memo,
-  transition,
   useBleeps,
-  useFrameSVGAssembler
+  useFrameSVGAssembler,
+  Text
 } from '@arwes/react'
 import { Xmark as IconClose } from 'iconoir-react'
 
-import { theme, type BleepNames } from '@/config'
+import { type BleepNames } from '@/config'
+import { Hr } from '../Hr'
 import styles from './Modal.module.css'
 
 interface ModalProps {
@@ -48,13 +47,10 @@ const Modal = memo((props: ModalProps): JSX.Element => {
         style={{
           backdropFilter: 'blur(0.25rem)'
         }}
-        animated={fade()}
+        animated={['fade']}
       />
 
-      <Animated
-        className="relative flex-1 flex flex-col m-auto py-6 max-w-md min-h-0 max-h-full"
-        animated={transition('y', theme.space(-8), 0)}
-      >
+      <Animated className="relative flex-1 flex flex-col m-auto py-6 max-w-md min-h-0 max-h-full">
         <FrameSVGKranox
           elementRef={frameRef}
           className={styles.frame}
@@ -66,16 +62,19 @@ const Modal = memo((props: ModalProps): JSX.Element => {
 
         <Animator combine manager="stagger">
           <Animator>
-            <Animated as="header" className="relative flex px-10" animated={flicker()}>
-              <div className="flex-1 flex flex-row gap-4 justify-between items-center border-b pb-2 border-primary-main-9">
-                <h1
-                  className={cx(
-                    'font-title font-light text-size-6 text-primary-main-3',
-                    'sm:text-size-5'
-                  )}
+            <Animated
+              as="header"
+              className="relative flex flex-col gap-2 px-10"
+              animated={['flicker']}
+            >
+              <div className="flex-1 flex flex-row gap-4 justify-between items-center">
+                <Text
+                  as="h1"
+                  className={cx('font-header text-size-6 text-primary-main-3', 'sm:text-size-5')}
+                  fixed
                 >
                   {header}
-                </h1>
+                </Text>
 
                 <button
                   className={cx(
@@ -93,11 +92,17 @@ const Modal = memo((props: ModalProps): JSX.Element => {
                   <IconClose />
                 </button>
               </div>
+
+              <Hr direction="both" />
             </Animated>
           </Animator>
 
-          <main className="relative overflow-y-auto flex-1 flex px-10 py-3 min-h-0">
-            <div className={cx('flex-1', contentClassName)}>{children}</div>
+          <main className="relative flex-1 flex px-10 py-3 min-w-0 min-h-0">
+            <Animated
+              className={cx('flex-1 flex flex-col gap-4 min-w-0 min-h-0', contentClassName)}
+            >
+              {children}
+            </Animated>
           </main>
 
           {!!Children.count(footer) && <footer className="relative">{footer}</footer>}

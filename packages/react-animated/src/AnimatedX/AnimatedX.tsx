@@ -12,10 +12,13 @@ import {
 
 import type { NoInfer } from '@arwes/tools'
 import { mergeRefs } from '@arwes/react-tools'
+import {
+  type AnimatedSettings,
+  type AnimatedXProp,
+  formatAnimatedCSSPropsShorthands
+} from '@arwes/animated'
 
-import type { AnimatedSettings, AnimatedXProp } from '../types.js'
 import { useAnimatedX } from '../useAnimatedX/index.js'
-import { formatAnimatedCSSPropsShorthands } from '../internal/formatAnimatedCSSPropsShorthands/index.js'
 
 interface AnimatedXProps<S extends string, E extends HTMLElement | SVGElement = HTMLDivElement> {
   elementRef?: ForwardedRef<E>
@@ -76,7 +79,7 @@ const AnimatedX = <
     className,
     style: {
       ...style,
-      visibility: hasState && hideOnStates.includes(animatedState) ? 'hidden' : 'visible',
+      visibility: hasState && hideOnStates.includes(animatedState) ? 'hidden' : '',
       ...dynamicStyles
     }
   })

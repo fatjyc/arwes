@@ -1,12 +1,11 @@
-import React from 'react'
 import type { Metadata } from 'next'
 
 import { settings } from '@/config/settings'
-import { DocsPage } from './DocsPage'
+import { PageDocs } from './PageDocs'
 
 export const metadata: Metadata = {
-  title: `Docs | ${settings.title}`,
+  title: `Documentation | ${settings.title}`,
   description: settings.description
 }
 
-export default (): JSX.Element => <DocsPage />
+export default (): JSX.Element => <PageDocs />

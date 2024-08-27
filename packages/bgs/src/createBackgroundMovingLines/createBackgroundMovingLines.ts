@@ -1,6 +1,6 @@
 import { randomizeList } from '@arwes/tools'
 import { type Animation, easing, createAnimation } from '@arwes/animated'
-import type { AnimatorInterface } from '@arwes/animator'
+import type { AnimatorNode } from '@arwes/animator'
 
 interface CreateBackgroundMovingLinesSettings {
   lineWidth?: number
@@ -16,9 +16,9 @@ interface CreateBackgroundMovingLinesSettings {
 }
 
 interface CreateBackgroundMovingLinesProps {
-  settings: { current: CreateBackgroundMovingLinesSettings }
   canvas: HTMLCanvasElement
-  animator?: AnimatorInterface
+  animator?: AnimatorNode
+  settingsRef: { current: CreateBackgroundMovingLinesSettings }
 }
 
 interface CreateBackgroundMovingLines {
@@ -88,7 +88,7 @@ const createBackgroundMovingLines = (
 
   const getSettings = (): Required<CreateBackgroundMovingLinesSettings> => ({
     ...defaultProps,
-    ...props.settings.current
+    ...props.settingsRef.current
   })
 
   const resize = (): void => {
@@ -164,7 +164,7 @@ const createBackgroundMovingLines = (
 
     const {
       duration: { interval = 10 }
-    } = animator.node.settings
+    } = animator.settings
 
     runningControl?.cancel()
     runningControl = createAnimation({
@@ -208,7 +208,7 @@ const createBackgroundMovingLines = (
       return
     }
 
-    unsubscribe = animator.node.subscribe((node) => {
+    unsubscribe = animator.subscribe((node) => {
       switch (node.state) {
         case 'entering': {
           setup()
