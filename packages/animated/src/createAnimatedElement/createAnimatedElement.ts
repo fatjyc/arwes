@@ -1,10 +1,10 @@
-import { animate } from 'motion'
+import { animate, timeline, stagger, spring, glide } from 'motion'
 import { filterProps } from '@arwes/tools'
 import type { AnimatorNode } from '@arwes/animator'
 
-import type { EasingName, AnimatedProp, AnimatedTransitionFunctionReturn } from '../types.js'
+import type { EasingName, AnimatedProp, AnimatedAnimationFunctionReturn } from '../types.js'
 import { easing } from '../easing/index.js'
-import { formatAnimatedCSSPropsShorthands } from '../formatAnimatedCSSPropsShorthands/index.js'
+import { applyAnimatedCSSProps } from '../applyAnimatedCSSProps/index.js'
 import { transition, fade, flicker, draw } from '../transitions/index.js'
 
 type AnimatedElementPropsSettings<Element = HTMLElement | SVGElement> = {
@@ -44,7 +44,7 @@ const createAnimatedElement = <Element extends HTMLElement | SVGElement = HTMLEl
     ...filterProps(props.settingsRef.current)
   })
 
-  const animations = new Set<AnimatedTransitionFunctionReturn>()
+  const animations = new Set<AnimatedAnimationFunctionReturn>()
 
   const settingsInitial = getSettings()
 
@@ -56,18 +56,18 @@ const createAnimatedElement = <Element extends HTMLElement | SVGElement = HTMLEl
       .filter(Boolean)
 
     const initialAttributes: Record<string, string> = animatedList
-      .map((item) => item?.initialAttributes)
-      .reduce((total: object, item: object | undefined) => ({ ...total, ...item }), {})
+      .map((item) => (item ? item.initialAttributes : null))
+      .reduce((total: object, item: object | null | undefined) => ({ ...total, ...item }), {})
 
     Object.keys(initialAttributes).forEach((attribute) => {
       element.setAttribute(attribute, initialAttributes[attribute])
     })
 
     const dynamicStyles = animatedList
-      .map((item) => formatAnimatedCSSPropsShorthands(item?.initialStyle))
+      .map((item) => (item ? item.initialStyle : null))
       .reduce((total, item) => ({ ...total, ...item }), {})
 
-    Object.assign(element.style, dynamicStyles)
+    applyAnimatedCSSProps(element, dynamicStyles!)
   }
 
   const unsubscribe = animator.subscribe((node) => {
@@ -104,7 +104,7 @@ const createAnimatedElement = <Element extends HTMLElement | SVGElement = HTMLEl
         }
         return item
       })
-      .map((settingsItem) => settingsItem?.transitions?.[node.state])
+      .map((settingsItem) => (settingsItem ? settingsItem.transitions?.[node.state] : null))
       .filter(Boolean)
       .forEach((transition) => {
         if (typeof transition === 'function') {
@@ -112,9 +112,16 @@ const createAnimatedElement = <Element extends HTMLElement | SVGElement = HTMLEl
             element,
             $,
             duration: transitionDuration,
-            nodeDuration
-          })
+            nodeDuration,
+            easing,
+            animate,
+            timeline,
+            stagger,
+            spring,
+            glide
+          }) as unknown as AnimatedAnimationFunctionReturn
 
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           if (animation) {
             animations.add(animation)
 

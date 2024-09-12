@@ -93,6 +93,10 @@ export const sandboxes = [
               {
                 name: 'createAnimatedXElement',
                 code: require('!raw-loader?esModule=false!@repository/packages/animated/src/createAnimatedXElement/createAnimatedXElement.sandbox.tsx')
+              },
+              {
+                name: 'animateDraw',
+                code: require('!raw-loader?esModule=false!@repository/packages/animated/src/animateDraw/animateDraw.sandbox.tsx')
               }
             ]
           }
@@ -165,32 +169,90 @@ export const sandboxes = [
             name: '@arwes/frames',
             children: [
               {
-                name: 'createFrameSVGUnderline',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameSVGUnderline/createFrameSVGUnderline.sandbox.tsx')
+                name: 'createFrame',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.sandbox.tsx'),
+                children: [
+                  {
+                    name: 'shapes',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.shapes.sandbox.tsx')
+                  },
+                  {
+                    name: 'clipping',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.clipping.sandbox.tsx')
+                  },
+                  {
+                    name: 'masking',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.masking.sandbox.tsx')
+                  },
+                  {
+                    name: 'patterns',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.patterns.sandbox.tsx')
+                  },
+                  {
+                    name: 'contextClasses',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.contextClasses.sandbox.tsx')
+                  },
+                  {
+                    name: 'contextStyles',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.contextStyles.sandbox.tsx')
+                  },
+                  {
+                    name: 'contextAnimations',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.contextAnimations.sandbox.tsx')
+                  },
+                  {
+                    name: 'contextAttrs',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.contextAttrs.sandbox.tsx')
+                  },
+                  {
+                    name: 'animator',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.animator.sandbox.tsx')
+                  },
+                  {
+                    name: 'drawing',
+                    code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrame/createFrame.drawing.sandbox.tsx')
+                  }
+                ]
               },
               {
-                name: 'createFrameSVGLines',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameSVGLines/createFrameSVGLines.sandbox.tsx')
+                name: 'createFrameUnderlineSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameUnderlineSettings/createFrameUnderlineSettings.sandbox.tsx')
               },
               {
-                name: 'createFrameSVGCorners',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameSVGCorners/createFrameSVGCorners.sandbox.tsx')
+                name: 'createFrameLinesSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameLinesSettings/createFrameLinesSettings.sandbox.tsx')
               },
               {
-                name: 'createFrameSVGOctagon',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameSVGOctagon/createFrameSVGOctagon.sandbox.tsx')
+                name: 'createFrameCornersSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameCornersSettings/createFrameCornersSettings.sandbox.tsx')
               },
               {
-                name: 'createFrameSVGNefrex',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameSVGNefrex/createFrameSVGNefrex.sandbox.tsx')
+                name: 'createFrameOctagonSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameOctagonSettings/createFrameOctagonSettings.sandbox.tsx')
               },
               {
-                name: 'createFrameSVGKranox',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameSVGKranox/createFrameSVGKranox.sandbox.tsx')
+                name: 'createFrameNeroSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameNeroSettings/createFrameNeroSettings.sandbox.tsx')
               },
               {
-                name: 'renderFrameSVG',
-                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/renderFrameSVG/renderFrameSVG.sandbox.tsx')
+                name: 'createFrameNefrexSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameNefrexSettings/createFrameNefrexSettings.sandbox.tsx')
+              },
+              {
+                name: 'createFrameKranoxSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameKranoxSettings/createFrameKranoxSettings.sandbox.tsx')
+              },
+              {
+                name: 'createFrameHeaderSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameHeaderSettings/createFrameHeaderSettings.sandbox.tsx')
+              },
+              {
+                name: 'createFrameCircleSettings',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/createFrameCircleSettings/createFrameCircleSettings.sandbox.tsx')
+              },
+              {
+                name: 'animateFrameAssembler',
+                code: require('!raw-loader?esModule=false!@repository/packages/frames/src/animateFrameAssembler/animateFrameAssembler.sandbox.tsx')
               },
               {
                 name: 'styleFrameClipOctagon',
@@ -257,10 +319,6 @@ export const sandboxes = [
       {
         name: 'Effects',
         children: [
-          {
-            name: 'animateFrameSVGAssembler',
-            code: require('!raw-loader?esModule=false!@repository/packages/effects/src/animateFrameSVGAssembler/animateFrameSVGAssembler.sandbox.tsx')
-          },
           {
             name: 'createEffectIlluminator',
             code: require('!raw-loader?esModule=false!@repository/packages/effects/src/createEffectIlluminator/createEffectIlluminator.sandbox.tsx')
@@ -490,42 +548,48 @@ export const sandboxes = [
             code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/basic.sandbox.tsx'),
             children: [
               {
-                name: 'FrameSVGUnderline',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVGUnderline/FrameSVGUnderline.sandbox.tsx')
+                name: 'FrameUnderline',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameUnderline/FrameUnderline.sandbox.tsx')
               },
               {
-                name: 'FrameSVGLines',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVGLines/FrameSVGLines.sandbox.tsx')
+                name: 'FrameLines',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameLines/FrameLines.sandbox.tsx')
               },
               {
-                name: 'FrameSVGCorners',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVGCorners/FrameSVGCorners.sandbox.tsx')
+                name: 'FrameCorners',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameCorners/FrameCorners.sandbox.tsx')
               },
               {
-                name: 'FrameSVGOctagon',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVGOctagon/FrameSVGOctagon.sandbox.tsx')
+                name: 'FrameOctagon',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameOctagon/FrameOctagon.sandbox.tsx')
               },
               {
-                name: 'FrameSVGNefrex',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVGNefrex/FrameSVGNefrex.sandbox.tsx')
+                name: 'FrameNero',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameNero/FrameNero.sandbox.tsx')
               },
               {
-                name: 'FrameSVGKranox',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVGKranox/FrameSVGKranox.sandbox.tsx')
+                name: 'FrameNefrex',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameNefrex/FrameNefrex.sandbox.tsx')
               },
               {
-                name: 'FrameSVG',
-                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVG/FrameSVG.sandbox.tsx'),
-                children: [
-                  {
-                    name: 'paths',
-                    code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVG/FrameSVG.paths.sandbox.tsx')
-                  },
-                  {
-                    name: 'clipping',
-                    code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameSVG/FrameSVG.clipping.sandbox.tsx')
-                  }
-                ]
+                name: 'FrameKranox',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameKranox/FrameKranox.sandbox.tsx')
+              },
+              {
+                name: 'FrameHeader',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameHeader/FrameHeader.sandbox.tsx')
+              },
+              {
+                name: 'FrameCircle',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameCircle/FrameCircle.sandbox.tsx')
+              },
+              {
+                name: 'FrameBase',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/FrameBase/FrameBase.sandbox.tsx')
+              },
+              {
+                name: 'useFrameAssembler',
+                code: require('!raw-loader?esModule=false!@repository/packages/react-frames/src/useFrameAssembler/useFrameAssembler.sandbox.tsx')
               }
             ]
           }
@@ -561,10 +625,6 @@ export const sandboxes = [
       {
         name: 'Effects',
         children: [
-          {
-            name: 'useFrameSVGAssembler',
-            code: require('!raw-loader?esModule=false!@repository/packages/react-effects/src/useFrameSVGAssembler/useFrameSVGAssembler.sandbox.tsx')
-          },
           {
             name: 'Illuminator',
             code: require('!raw-loader?esModule=false!@repository/packages/react-effects/src/Illuminator/Illuminator.sandbox.tsx')

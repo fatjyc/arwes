@@ -1,5 +1,6 @@
 import type { Properties as CSSProperties } from 'csstype'
 import type { MotionKeyframesDefinition, AnimationOptionsWithOverrides } from '@motionone/dom'
+import type { animate, timeline, stagger, spring, glide } from 'motion'
 import type { AnimatorState, AnimatorDuration } from '@arwes/animator'
 
 export type EasingFn = (x: number) => number
@@ -36,6 +37,7 @@ export type EasingName =
   | 'outBounce'
   | 'inOutBounce'
 export type Easing = EasingFn | EasingName
+export type EasingMotion = AnimationOptionsWithOverrides['easing'] | Easing
 
 export interface AnimatedCSSPropsShorthands {
   x?: number | string
@@ -59,7 +61,7 @@ export type AnimatedCSSProps = Omit<CSSProperties, keyof AnimatedCSSPropsShortha
 
 // Animated
 
-export type AnimatedTransitionDefinition = MotionKeyframesDefinition & {
+export type AnimatedAnimationDefinition = MotionKeyframesDefinition & {
   duration?: number
   delay?: AnimationOptionsWithOverrides['delay']
   easing?: AnimationOptionsWithOverrides['easing'] | Easing
@@ -68,7 +70,7 @@ export type AnimatedTransitionDefinition = MotionKeyframesDefinition & {
   options?: AnimationOptionsWithOverrides
 }
 
-export interface AnimatedTransitionFunctionConfig {
+export interface AnimatedAnimationFunctionConfig {
   /**
    * Root element.
    */
@@ -86,12 +88,36 @@ export interface AnimatedTransitionFunctionConfig {
    */
   duration: number
   /**
+   * Easing presets.
+   */
+  easing: Record<EasingName, EasingFn>
+  /**
    * Associated node duration object.
    */
   nodeDuration: AnimatorDuration
+  /**
+   * Motion One `animate`.
+   */
+  animate: typeof animate
+  /**
+   * Motion One `timeline`.
+   */
+  timeline: typeof timeline
+  /**
+   * Motion One `stagger`.
+   */
+  stagger: typeof stagger
+  /**
+   * Motion One `spring`.
+   */
+  spring: typeof spring
+  /**
+   * Motion One `glide`.
+   */
+  glide: typeof glide
 }
 
-export interface AnimatedTransitionFunctionReturn {
+export interface AnimatedAnimationFunctionReturn {
   /**
    * A promise which resolves when the animation is finished/cancelled.
    */
@@ -107,17 +133,17 @@ export interface AnimatedTransitionFunctionReturn {
   cancel: () => void
 }
 
-export type AnimatedTransitionFunction =
-  | ((config: AnimatedTransitionFunctionConfig) => AnimatedTransitionFunctionReturn)
-  | ((config: AnimatedTransitionFunctionConfig) => void)
+export type AnimatedAnimationFunction =
+  | ((config: AnimatedAnimationFunctionConfig) => AnimatedAnimationFunctionReturn)
+  | ((config: AnimatedAnimationFunctionConfig) => void)
 
-export type AnimatedTransition = AnimatedTransitionFunction | AnimatedTransitionDefinition
+export type AnimatedAnimation = AnimatedAnimationFunction | AnimatedAnimationDefinition
 
 export interface AnimatedSettings {
   initialAttributes?: Record<string, string>
   initialStyle?: AnimatedCSSProps
   transitions?: {
-    [P in AnimatorState]?: AnimatedTransition | undefined
+    [P in AnimatorState]?: AnimatedAnimation | undefined
   }
 }
 
@@ -133,31 +159,33 @@ type AnimatedPropTransition = [
 
 export type AnimatedProp =
   | AnimatedSettings
-  | Array<AnimatedPropPreset | AnimatedPropTransition | AnimatedSettings | undefined>
+  | Array<AnimatedPropPreset | AnimatedPropTransition | AnimatedSettings | false | undefined>
+  | false
   | undefined
 
 // AnimatedX
 
-export type AnimatedXTransitionDefinition = AnimatedTransitionDefinition
-export type AnimatedXTransitionFunctionConfig = Omit<
-  AnimatedTransitionFunctionConfig,
+export type AnimatedXAnimationDefinition = AnimatedAnimationDefinition
+export type AnimatedXAnimationFunctionConfig = Omit<
+  AnimatedAnimationFunctionConfig,
   'duration' | 'nodeDuration'
 >
-export type AnimatedXTransitionFunctionReturn = AnimatedTransitionFunctionReturn
-export type AnimatedXTransitionFunction =
-  | ((config: AnimatedXTransitionFunctionConfig) => AnimatedXTransitionFunctionReturn)
-  | ((config: AnimatedXTransitionFunctionConfig) => void)
-export type AnimatedXTransition = AnimatedXTransitionDefinition | AnimatedXTransitionFunction
+export type AnimatedXAnimationFunctionReturn = AnimatedAnimationFunctionReturn
+export type AnimatedXAnimationFunction =
+  | ((config: AnimatedXAnimationFunctionConfig) => AnimatedXAnimationFunctionReturn)
+  | ((config: AnimatedXAnimationFunctionConfig) => void)
+export type AnimatedXAnimation = AnimatedXAnimationDefinition | AnimatedXAnimationFunction
 
 export interface AnimatedXSettings<States extends string> {
   initialAttributes?: Record<string, string>
   initialStyle?: AnimatedCSSProps
   transitions?: {
-    [P in States]?: AnimatedXTransition | undefined
+    [P in States]?: AnimatedXAnimation | undefined
   }
 }
 
 export type AnimatedXProp<States extends string> =
   | AnimatedXSettings<States>
   | Array<AnimatedXSettings<States> | undefined>
+  | false
   | undefined

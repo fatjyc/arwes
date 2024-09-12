@@ -2,7 +2,6 @@
 
 import { Animated, Animator } from '@arwes/react'
 
-import { settings } from '@/config'
 import { AR } from '@/ui'
 import { ExampleAnimatorNodeState } from './ExampleAnimatorNodeState'
 import { ExampleAnimatorTree } from './ExampleAnimatorTree'
@@ -18,6 +17,40 @@ export default (): JSX.Element => (
       <b>orchestrate UI elements transitions</b> and functionalities to facilitate the execution of
       animations on those transitions, along with some utilities to create certain common sci-fi
       animation effects.
+    </AR.P>
+
+    <AR.P>
+      ARWES motion tools are mostly to orchestrate animations rather than running them. There are
+      many great options already available such as{' '}
+      <a href="https://gsap.com" target="_blank">
+        GSAP
+      </a>
+      ,{' '}
+      <a href="https://www.framer.com/motion" target="_blank">
+        Framer Motion
+      </a>
+      , and{' '}
+      <a href="https://animejs.com" target="_blank">
+        Anime.js
+      </a>{' '}
+      to run animations and special effects, ARWES is intended to be used along with them.
+    </AR.P>
+
+    <AR.P>
+      ARWES uses{' '}
+      <a href="https://motion.dev" target="_blank">
+        Motion One
+      </a>{' '}
+      behind the scenes to run animations for its performance both at{' '}
+      <a href="https://motion.dev/docs/performance" target="_blank">
+        run time
+      </a>{' '}
+      and{' '}
+      <a href="https://bundlephobia.com/package/motion" target="_blank">
+        file size
+      </a>
+      . But it is limited due to its simplicity. So using ARWES along with other tools is
+      encouraged.
     </AR.P>
 
     <AR.H2>Animator System</AR.H2>
@@ -220,56 +253,16 @@ export default (): JSX.Element => (
       subsystems. It is up to the user to decide which workflows and transitions to use for an app.
     </AR.P>
 
-    <Animator>
-      <Animated
-        as="iframe"
-        data-name="playground"
-        className="block w-full h-[30rem] md:h-[35rem] lg:h-[40rem]"
-        src={`${settings.apps.play.url}?code=&type=predefined&sandbox=Examples%7CReact%7Csubsystems&explorer=false&editor=false&preview=true`}
-        animated={['flicker']}
-      />
-    </Animator>
+    <AR.Playground
+      className="h-[30rem] md:h-[35rem] lg:h-[40rem]"
+      url="?code=&type=predefined&sandbox=React%7CExamples%7Csubsystems&explorer=false&editor=false&preview=true"
+    />
 
     <AR.P>
       Some apps may not even need the exit transition for the most part but certain UI elements can
       still use it. Such as micro-interactions similar to the CSS hover effect, when the user enters
       the mouse in an UI element, it updates its style, and when it exits the mouse, it updates the
       styles back to the original styles, in this case, the exiting animations.
-    </AR.P>
-
-    <AR.H2>Animation Tools</AR.H2>
-
-    <AR.P>
-      ARWES motion tools are mostly to orchestrate animations rather than running them. There are
-      many great options already available such as{' '}
-      <a href="https://gsap.com" target="_blank">
-        GSAP
-      </a>
-      ,{' '}
-      <a href="https://www.framer.com/motion" target="_blank">
-        Framer Motion
-      </a>
-      , and{' '}
-      <a href="https://animejs.com" target="_blank">
-        Anime.js
-      </a>{' '}
-      to run animations and special effects, ARWES is intended to be used along with them.
-    </AR.P>
-
-    <AR.P>
-      ARWES uses{' '}
-      <a href="https://motion.dev" target="_blank">
-        Motion One
-      </a>{' '}
-      behind the scenes to run animations for its performance both at{' '}
-      <a href="https://motion.dev/docs/performance" target="_blank">
-        run time
-      </a>{' '}
-      and{' '}
-      <a href="https://bundlephobia.com/package/motion" target="_blank">
-        file size
-      </a>
-      . But it is limited due to its simplicity. So using other tools is encouraged.
     </AR.P>
 
     <AR.H2>Accessibility</AR.H2>

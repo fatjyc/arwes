@@ -1,8 +1,5 @@
 'use client'
 
-import { Animated, Animator } from '@arwes/react'
-
-import { settings } from '@/config'
 import { AR } from '@/ui'
 
 export default (): JSX.Element => (
@@ -15,15 +12,10 @@ export default (): JSX.Element => (
       common sci-fi effects.
     </AR.P>
 
-    <Animator>
-      <Animated
-        as="iframe"
-        data-name="playground"
-        className="block w-full h-[30rem]"
-        src={`${settings.apps.play.url}?code=&type=predefined&sandbox=Examples%7CReact%7Cbackgrounds&explorer=false&editor=false&preview=true`}
-        animated={['flicker']}
-      />
-    </Animator>
+    <AR.Playground
+      className="h-[30rem]"
+      url="?code=&type=predefined&sandbox=React%7CExamples%7Cbackgrounds&editor=false&preview=true&explorer=false"
+    />
 
     <AR.P>
       They are 2D Canvas HTML elements with configurable visual effects. Some of them offer common
@@ -31,6 +23,10 @@ export default (): JSX.Element => (
       are many other libraries which offer these kinds of background effects too such as{' '}
       <a href="https://www.vantajs.com" target="_blank">
         VantaJS
+      </a>{' '}
+      and{' '}
+      <a href="https://github.com/tsparticles/tsparticles" target="_blank">
+        tsparticles
       </a>
       .
     </AR.P>
