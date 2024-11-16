@@ -63,9 +63,9 @@ export default (): JSX.Element => (
       <a href="https://github.com/propjockey/augmented-ui" target="_blank">
         Augmented UI
       </a>{' '}
-      to create frames using{' '}
-      <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path" target="_blank">
-        CSS <code>clip-path</code>
+      or{' '}
+      <a href="https://rive.app" target="_blank">
+        Rive
       </a>
       . Otherwise, ARWES Frames can be the solution.
     </AR.P>
@@ -100,6 +100,9 @@ export default (): JSX.Element => (
         <ul>
           <li>
             <code>--arwes-frames-bg-color</code> for fill color.
+          </li>
+          <li>
+            <code>--arwes-frames-bg-stroke</code> for stroke color.
           </li>
           <li>
             <code>--arwes-frames-bg-filter</code> for filter effect.

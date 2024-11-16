@@ -1,5 +1,10 @@
 import type { AnimatorNode } from '@arwes/animator'
-import type { AnimatedProp, AnimatedCSSProps, AnimatedXAnimation } from '@arwes/animated'
+import type {
+  AnimatedProp,
+  AnimatedElementPropsSettings,
+  AnimatedCSSProps,
+  AnimatedXAnimation
+} from '@arwes/animated'
 
 type ContextType = Record<string, string>
 
@@ -8,6 +13,7 @@ export type FrameSettingsElementCommon<Contexts extends ContextType = ContextTyp
   id?: string
   className?: string
   style?: AnimatedCSSProps
+  animatedSettings?: Omit<AnimatedElementPropsSettings, 'animated'>
   animated?: AnimatedProp
   contexts?: {
     [C in keyof Contexts]?: {
@@ -102,7 +108,10 @@ export type FrameSettingsPathDefinition = FrameSettingsPathCommand[]
 export type FrameSettingsPath<Contexts extends ContextType = ContextType> =
   FrameSettingsElementCommon<Contexts> & {
     type?: 'path'
-    path: string | FrameSettingsPathDefinition
+    path:
+      | string
+      | FrameSettingsPathDefinition
+      | ((config: { width: number; height: number }) => string)
     draw?: (config: { element: SVGPathElement; width: number; height: number }) => void
     contexts?: {
       [C in keyof Contexts]?: {
@@ -110,7 +119,10 @@ export type FrameSettingsPath<Contexts extends ContextType = ContextType> =
           className?: string
           style?: AnimatedCSSProps
           animate?: AnimatedXAnimation
-          path?: FrameSettingsPathDefinition
+          path?:
+            | string
+            | FrameSettingsPathDefinition
+            | ((config: { width: number; height: number }) => string)
         }
       }
     }

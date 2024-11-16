@@ -1,5 +1,4 @@
 import { filterProps } from '@arwes/tools'
-import { animateDraw } from '@arwes/animated'
 import type { FrameSettingsPathDefinition, FrameSettings, FrameSettingsElement } from '../types.js'
 
 type CreateFrameLinesSettingsProps = {
@@ -92,7 +91,6 @@ const createFrameLinesSettings = (props?: CreateFrameLinesSettingsProps): FrameS
       },
       {
         type: 'g',
-        name: 'line',
         style: {
           filter: styled ? 'var(--arwes-frames-line-filter)' : undefined,
           fill: styled ? 'none' : undefined,
@@ -102,29 +100,14 @@ const createFrameLinesSettings = (props?: CreateFrameLinesSettingsProps): FrameS
         elements: largePolylines.map(
           (polyline) =>
             ({
-              animated: animated && {
-                transitions: {
-                  entering: ({ element, duration }) =>
-                    animateDraw({
-                      element: element as SVGPathElement,
-                      duration,
-                      isEntering: true
-                    }),
-                  exiting: ({ element, duration }) =>
-                    animateDraw({
-                      element: element as SVGPathElement,
-                      duration,
-                      isEntering: false
-                    })
-                }
-              },
+              name: 'line',
+              animated: animated && ['draw'],
               path: polyline
             }) satisfies FrameSettingsElement
         )
       },
       {
         type: 'g',
-        name: 'deco',
         style: {
           filter: styled ? 'var(--arwes-frames-deco-filter)' : undefined,
           fill: styled ? 'none' : undefined,
@@ -134,13 +117,13 @@ const createFrameLinesSettings = (props?: CreateFrameLinesSettingsProps): FrameS
         animated: animated && {
           transitions: {
             entering: ({ element, duration, animate }) =>
-              animate(element, { opacity: [0, 1] }, { duration: duration / 2 }),
+              animate(element, { opacity: [0, 1, 0.5, 1] }, { duration: duration / 2 }),
             exiting: ({ element, duration, animate }) =>
-              animate(element, { opacity: [1, 0] }, { delay: duration / 2, duration: duration / 2 })
+              animate(element, { opacity: [1, 0, 0.5, 0] }, { duration: duration / 2 })
           }
         },
         elements: smallPolylines.map(
-          (polyline) => ({ path: polyline }) satisfies FrameSettingsElement
+          (polyline) => ({ name: 'deco', path: polyline }) satisfies FrameSettingsElement
         )
       }
     ]

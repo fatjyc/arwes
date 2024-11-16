@@ -4,10 +4,7 @@ import { createAnimatorSystem } from '@arwes/animator'
 let active = false
 const system = createAnimatorSystem()
 const animator = system.register(undefined, {
-  getSettings: () => ({ active, duration: { enter: 1, exit: 1 } }),
-  setSettings: () => {},
-  getForeignRef: () => {},
-  setForeignRef: () => {}
+  getSettings: () => ({ active, duration: { enter: 1, exit: 0.5 } })
 })
 
 const root = document.querySelector('#root')!
@@ -18,7 +15,7 @@ root.innerHTML = `
       flex-wrap: wrap;
       gap: 1rem;
       --arwes-frames-bg-color: hsl(180, 75%, 10%);
-      --arwes-frames-line-color: hsl(180, 75%, 25%);
+      --arwes-frames-line-color: hsl(180, 75%, 30%);
       --arwes-frames-deco-color: hsl(180, 75%, 50%);
     "
   >
@@ -54,7 +51,7 @@ createFrame(root.querySelector<SVGSVGElement>('.frame2')!, {
 const update = (): void => {
   active = !active
   animator.send('update')
-  setTimeout(update, active ? 3_000 : 1_500)
+  setTimeout(update, active ? 3_000 : 1_000)
 }
 
 animator.send('setup')
